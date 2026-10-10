@@ -1,41 +1,41 @@
-# Requirement Delivery Harness
+# 需求交付 Harness
 
-This context defines the shared language for governing a software requirement from intake through an auditable pull request.
+本文定义软件需求从接收到形成可审计 PR 的统一领域语言。
 
-## Language
+## 术语
 
-**Harness**:
-The project-level system that governs how a requirement is interpreted, implemented, verified, and presented for review.
-_Avoid_: Prompt collection, agent instructions
+**Harness（交付管控系统）**：
+管控需求解释、实施、验证和审阅呈现方式的项目级系统。
+_避免使用_：提示词集合、Agent 指令
 
-**Requirement Contract**:
-The normalized, reviewable statement of a requirement, including its goal, scope, exclusions, acceptance criteria, constraints, risks, and verification expectations.
-_Avoid_: Requirement file, ticket copy
+**Requirement Contract（需求契约）**：
+对需求的规范化、可审阅表述，包含目标、范围、非目标、验收标准、约束、风险和验证预期。
+_避免使用_：需求文件、工单副本
 
-**Requirement ID**:
-The unique identity that ties one requirement to its lifecycle, decisions, evidence, implementation branch, and PR Package.
-_Avoid_: Branch name, ticket number
+**Requirement ID（需求标识）**：
+将一个需求的生命周期、决策、证据、实施分支和 PR Package 关联起来的唯一身份。
+_避免使用_：分支名、工单号
 
-**Harness Run**:
-One isolated execution of the Harness for a single Requirement ID.
-_Avoid_: Agent session, chat
+**Harness Run（Harness 运行实例）**：
+Harness 针对单个 Requirement ID 的一次隔离执行。
+_避免使用_：Agent 会话、聊天
 
-**Gate**:
-A mandatory checkpoint whose stated evidence and approval conditions must be satisfied before work advances to the next stage.
-_Avoid_: Suggestion, reminder
+**Gate（门禁）**：
+工作进入下一阶段前必须满足指定证据和批准条件的检查点。
+_避免使用_：建议、提醒
 
-**Exception Record**:
-An explicitly approved, time-bounded account of a Gate that was not satisfied, its impact, and the compensating verification required.
-_Avoid_: Skip, waiver comment
+**Exception Record（例外记录）**：
+对未满足门禁、相关影响及补偿验证所作的显式批准且有期限的记录。
+_避免使用_：跳过、豁免评论
 
-**Verification Evidence**:
-Reproducible proof that an acceptance criterion or quality condition has been satisfied.
-_Avoid_: Agent claim, completion note
+**Verification Evidence（验证证据）**：
+证明某条验收标准或质量条件已满足的可复现证据。
+_避免使用_：Agent 声明、完成说明
 
-**PR Package**:
-The standardized review artifact that maps the requirement to its implementation, verification evidence, risks, rollback approach, and known gaps.
-_Avoid_: PR summary, change log
+**PR Package（PR 交付包）**：
+将需求映射到实现、验证证据、风险、回退方案和已知缺口的标准化审阅材料。
+_避免使用_：PR 摘要、变更日志
 
-**Done**:
-The state in which every acceptance criterion is supported by verification evidence, all required quality gates pass, unrelated changes are absent, and remaining gaps are explicit.
-_Avoid_: Implemented, code complete
+**Done（完成）**：
+每条验收标准都有验证证据、全部强制门禁通过、不存在无关修改，且剩余缺口均已明确时的状态。
+_避免使用_：已实现、代码完成

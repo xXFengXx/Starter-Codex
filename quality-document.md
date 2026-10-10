@@ -1,40 +1,40 @@
-# Quality Document -- Project 06 Capstone
+# 质量评估文档——项目 06 综合项目
 
-## Scoring Summary
+## 评分汇总
 
-| Dimension | Grade | Notes |
-|-----------|-------|-------|
-| Build & Compile | C | Builds but has unused import warnings |
-| Feature Completeness | D | Missing feedback, clean state, benchmarking |
-| ConversationHistory | D | Basic list display, no chat bubbles or interactivity |
-| Structured Logging | C | Logger exists but not used in all services |
-| Q&A with Citations | B | Works for basic queries |
-| Document Import | B | Works via dev console only |
-| Indexing | B | Batch indexing works, no progress reporting |
-| Persistence | B | Data persists across restarts |
-| Test Coverage | F | No tests written |
-| Documentation | D | Minimal AGENTS.md only |
-| Clean State | F | No reset functionality |
-| Benchmarking | F | No benchmark scripts |
+| 维度 | 等级 | 说明 |
+| --- | --- | --- |
+| 构建与编译 | C | 可以构建，但存在未使用导入警告 |
+| 功能完整性 | D | 缺少反馈、干净状态和基准测试 |
+| 对话历史 | D | 只有基础列表，没有聊天气泡或交互 |
+| 结构化日志 | C | 已有 Logger，但并非所有 Service 都使用 |
+| 带引用的问答 | B | 基础查询可用 |
+| 文档导入 | B | 只能通过开发控制台使用 |
+| 索引 | B | 批量索引可用，但没有进度反馈 |
+| 持久化 | B | 重启后数据仍保留 |
+| 测试覆盖率 | F | 没有测试 |
+| 文档 | D | 只有最基础的 AGENTS.md |
+| 干净状态 | F | 没有重置功能 |
+| 基准测试 | F | 没有基准脚本 |
 
-## Overall Grade: D+
+## 总体等级：D+
 
-## Critical Gaps
+## 关键缺口
 
-1. No feedback collection on Q&A responses
-2. No clean state reset functionality
-3. No benchmark scripts
-4. ConversationHistory is a flat list without chat styling
-5. Logger is basic -- no structured JSON output
-6. No test coverage at all
-7. Missing all advanced harness files (CLAUDE.md, feature_list.json, etc.)
+1. 问答响应没有反馈收集；
+2. 没有干净状态重置能力；
+3. 没有基准脚本；
+4. ConversationHistory 是平铺列表，没有聊天样式；
+5. Logger 较基础，缺少完整的结构化 JSON 输出；
+6. 完全没有测试覆盖；
+7. 缺少进阶 Harness 文件和自动化。
 
-## Action Items
+## 后续行动
 
-- [ ] Add FeedbackEntry type and feedback service
-- [ ] Implement clean state reset via IPC
-- [ ] Create benchmark.sh script
-- [ ] Enhance ConversationHistory with chat bubbles
-- [ ] Add structured JSON logging to all services
-- [ ] Write tests for all services
-- [ ] Create full harness (CLAUDE.md, feature_list.json, init.sh, etc.)
+- [ ] 增加 FeedbackEntry 类型和反馈 Service；
+- [ ] 通过 IPC 实现干净状态重置；
+- [ ] 创建基准脚本；
+- [ ] 用聊天气泡增强 ConversationHistory；
+- [ ] 为全部 Service 增加结构化 JSON 日志；
+- [ ] 为全部 Service 编写测试；
+- [x] 建立完整 Harness。

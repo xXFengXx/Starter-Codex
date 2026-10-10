@@ -1,56 +1,18 @@
-# Software Design Notes
+# 知识库设计笔记
 
-## Architecture Overview
+应用采用分层架构，将 Electron 主进程、preload 边界、React 渲染进程和业务 Service 分离。
 
-The knowledge base application follows a layered architecture pattern with clear separation of concerns. The system is divided into four primary layers: the main process, preload scripts, the renderer layer, and services.
+## 主要原则
 
-## Main Process
+- 跨进程通信通过集中定义的类型化 IPC 通道完成；
+- Service 负责业务逻辑，不依赖 UI；
+- 持久化通过注入的 `PersistenceService` 访问；
+- 问答结果携带引用和置信度；
+- 日志应采用结构化、机器可读格式。
 
-The main process is responsible for window management, IPC handler registration, and lifecycle management. It serves as the entry point for the Electron application and coordinates between the operating system and the renderer process.
+## 已知改进方向
 
-Key responsibilities:
-- BrowserWindow creation and configuration
-- IPC channel registration
-- Service initialization and dependency injection
-- Application lifecycle events (ready, window-all-closed, activate)
-
-## Preload Layer
-
-The preload script acts as a secure bridge between the main and renderer processes. It uses Electron's contextBridge to expose a typed API to the renderer without granting full Node.js access.
-
-The exposed API is organized into three namespaces:
-- `documents` - CRUD operations for document management
-- `indexing` - Document chunking and index management
-- `qa` - Question answering with citations
-
-## Renderer Layer
-
-The renderer uses React with TypeScript to build the user interface. Components communicate exclusively through the preload bridge API, never directly accessing Node.js APIs or the filesystem.
-
-## Services Layer
-
-Business logic lives in service classes that run in the main process:
-- `PersistenceService` - Filesystem read/write operations
-- `DocumentService` - Document import, storage, and retrieval
-- `IndexingService` - Text chunking and index building
-- `QaService` - Mock Q&A with citation support
-- `Logger` - Structured JSON logging for runtime observability
-
-## Data Flow
-
-1. User action in renderer triggers IPC call via preload bridge
-2. IPC handler in main process delegates to appropriate service
-3. Service performs business logic using persistence layer
-4. Result flows back through IPC to renderer for display
-5. Each step is logged with structured JSON output for debugging
-
-## Observability
-
-All services emit structured log entries with:
-- ISO 8601 timestamps
-- Log level (DEBUG, INFO, WARN, ERROR)
-- Service name tag
-- Human-readable message
-- Optional structured data payload
-
-This enables runtime debugging and post-hoc analysis of application behavior.
+- 为导入、索引和问答增加自动化测试；
+- 提供隔离且可重置的测试状态；
+- 完善对话历史与反馈交互；
+- 使用统一 Harness 管控需求到 PR 的交付过程。

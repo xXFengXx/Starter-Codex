@@ -47,7 +47,7 @@
 
 ### Q6 — PR 的标准化程度
 
-**问题**：是否接受 PR 使用固定结构并由 Harness 自动生成初稿，包含 Why、What、Requirement Traceability、Verification、Review Guide、Risk & Rollback、Known Gaps 和 Harness Evidence。
+**问题**：是否接受 PR 使用固定结构并由 Harness 自动生成初稿，包含背景与原因、变更内容、需求追踪、验证、审阅指南、风险与回退、已知缺口和交付管控证据。
 
 **建议**：是。这是降低 PR 阅读成本的核心交付界面。  
 **决定**：同意。

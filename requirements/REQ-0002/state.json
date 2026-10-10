@@ -1,0 +1,57 @@
+{
+  "requirementId": "REQ-0002",
+  "state": "review-ready",
+  "risk": "low",
+  "updatedAt": "2026-10-10T05:31:13.986Z",
+  "history": [
+    {
+      "from": null,
+      "to": "intake",
+      "actor": "Codex",
+      "at": "2026-10-10T00:00:00.000Z",
+      "note": "收到全项目 Markdown 中文化需求。"
+    },
+    {
+      "from": "intake",
+      "to": "clarified",
+      "actor": "Codex",
+      "at": "2026-10-10T00:01:00.000Z",
+      "note": "范围限定为受控 Markdown；保留命令、路径和标识符。"
+    },
+    {
+      "from": "clarified",
+      "to": "planned",
+      "actor": "Codex",
+      "at": "2026-10-10T00:02:00.000Z",
+      "note": "确定按文档职责分组翻译并同步调整生成器。"
+    },
+    {
+      "from": "planned",
+      "to": "approved",
+      "actor": "xXFengXx",
+      "at": "2026-10-10T00:03:00.000Z",
+      "note": "用户明确要求将项目中所有 Markdown 文档转换为中文。"
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-10T00:04:00.000Z",
+      "note": "在独立需求分支开始实施。"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-10T05:30:36.436Z",
+      "note": "全部 Markdown 已中文化，开始执行强制门禁。"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-10T05:31:13.986Z",
+      "note": "中文文档、验证证据和中文 PR Package 均已完成。"
+    }
+  ]
+}

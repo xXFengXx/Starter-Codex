@@ -1,36 +1,36 @@
-# Why
+# 背景与原因
 
-<!-- Link the Requirement Contract and explain the outcome. -->
+<!-- 链接 Requirement Contract 并说明目标。 -->
 
-# What
+# 变更内容
 
-<!-- Summarize behavioral changes, not a raw file list. -->
+<!-- 总结行为变化，而不是堆砌文件列表。 -->
 
-# Requirement traceability
+# 需求追踪
 
-<!-- Paste or link the AC mapping. No unmapped acceptance criteria. -->
+<!-- 粘贴或链接验收标准映射，不得存在未映射项。 -->
 
-# Verification
+# 验证
 
-<!-- Exact commands and results. -->
+<!-- 写出精确命令和结果。 -->
 
-# Review guide
+# 审阅指南
 
-<!-- Give reviewers a short, ordered path through the change. -->
+<!-- 为审阅者提供简短、有顺序的阅读路径。 -->
 
-# Risk and rollback
+# 风险与回退
 
-<!-- Include risk level and safe reversal. -->
+<!-- 包含风险等级和安全回退方法。 -->
 
-# Known gaps and exceptions
+# 已知缺口与例外
 
-<!-- Explicitly say None when empty. -->
+<!-- 没有内容时明确写“无”。 -->
 
-# Harness evidence
+# 交付管控证据
 
-- Contract:
-- Plan:
-- Traceability:
-- Verification:
-- Review feedback:
+- 需求契约：
+- 实施计划：
+- 追踪矩阵：
+- 验证证据：
+- 审阅反馈：
 

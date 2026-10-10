@@ -1,59 +1,58 @@
-# Requirement Delivery Process
+# 需求交付流程
 
-The Harness governs one requirement from intake through an auditable PR. It has five cooperating subsystems.
+Harness 管控单个需求从接收到形成可审计 PR 的全过程，由五个协作子系统组成。
 
-## 1. Instructions
+## 1. 指令
 
-`AGENTS.md` is the agent entry point. This document defines the canonical workflow. Tool-specific files may point here but must not copy or override it.
+`AGENTS.md` 是 Agent 入口；本文定义权威工作流。工具专用文件只能引用本文，不得复制或覆盖规则。
 
-## 2. Tools
+## 2. 工具
 
-All agents and CI invoke the same `npm` commands. `harness/scripts/harness.mjs` validates contracts and states, enforces transitions, runs gates, and generates PR Packages.
+所有 Agent 与 CI 调用相同的 `npm` 命令。`harness/scripts/harness.mjs` 负责校验契约和状态、约束状态转换、执行门禁并生成 PR Package。
 
-## 3. State
+## 3. 状态
 
-Each Harness Run lives at `requirements/<Requirement ID>/`. `state.json` is machine-readable lifecycle state; the surrounding Markdown files are reviewable contracts and evidence. Chat transcripts are not state.
+每次 Harness Run 位于 `requirements/<Requirement ID>/`。`state.json` 保存机器可读的生命周期状态，周边 Markdown 保存可审阅的契约和证据。聊天记录不是状态。
 
-## 4. Environment
+## 4. 环境
 
-The checked-in lockfile pins dependencies. Automated tests and benchmarks use `.harness/runtime/`, which can be safely reset without touching developer data.
+提交到仓库的锁文件固定依赖。自动化测试和基准使用 `.harness/runtime/`，可以安全重置且不会接触开发者数据。
 
-## 5. Feedback
+## 5. 反馈
 
-Local checks, CI, benchmarks, review feedback, failed attempts, and post-merge learning feed back into requirement evidence. A failure is information to preserve, not a result to hide.
+本地检查、CI、基准、审阅反馈、失败尝试和合并后经验都会回流为需求证据。失败是需要保留的信息，不是需要隐藏的结果。
 
-## Lifecycle
+## 生命周期
 
 ```text
 intake -> clarified -> planned -> approved -> implementing -> verifying -> review-ready -> completed
 ```
 
-`blocked` may return to the state stored in `blockedFrom`. `cancelled` and `completed` are terminal. No transition may skip `approved` or `verifying`.
-Review feedback may move `review-ready` back to `implementing`; the change must pass through `verifying` again before returning to review.
+`blocked` 可返回 `blockedFrom` 记录的状态；`cancelled` 和 `completed` 是终态。任何转换不得跳过 `approved` 或 `verifying`。审阅反馈可以让 `review-ready` 返回 `implementing`，修改后必须重新经过 `verifying`。
 
-## Gate policy
+## 门禁策略
 
-| Entering state | Required evidence |
+| 进入状态 | 必需证据 |
 | --- | --- |
-| clarified | Complete Requirement Contract with numbered acceptance criteria |
-| planned | Implementation plan and complete traceability rows |
-| approved | Human approver recorded in state history |
-| implementing | Approved state and isolated requirement branch |
-| verifying | Implementation traceability updated |
-| review-ready | Latest verification summary passes all mandatory commands |
-| completed | PR accepted or merged; known gaps and exceptions explicit |
+| clarified | 完整 Requirement Contract 和已编号验收标准 |
+| planned | 实施计划和完整追踪行 |
+| approved | 状态历史中记录人工批准者 |
+| implementing | 已批准状态和独立需求分支 |
+| verifying | 已更新实现追踪信息 |
+| review-ready | 最新验证摘要显示全部强制命令通过 |
+| completed | PR 已接受或合并；已知缺口和例外均已明确 |
 
-An exception is valid only when its impact, compensating verification, approver, and expiry condition are recorded. Exceptions always appear in the PR Package.
+有效例外必须记录影响、补偿验证、批准人和到期条件，并始终出现在 PR Package 中。
 
-## Risk levels
+## 风险等级
 
-- `low`: localized, reversible behavior or documentation.
-- `medium`: user-visible behavior, IPC, persistence access, or multiple modules.
-- `high`: security, permissions, migrations, persistence formats, destructive behavior, or cross-process contracts.
+- `low`：局部、可逆的行为或文档变更；
+- `medium`：用户可见行为、IPC、持久化访问或多模块变更；
+- `high`：安全、权限、迁移、持久化格式、破坏性行为或跨进程契约。
 
-Risk changes verification depth, never the universal gates.
+风险只改变验证深度，不改变通用门禁。
 
-## Commands
+## 命令
 
 ```powershell
 npm run harness:doctor
@@ -66,7 +65,7 @@ npm run harness:pr -- REQ-0001
 npm run harness:benchmark
 ```
 
-## Adding a requirement
+## 新增需求
 
-Copy `harness/templates/requirement/` to `requirements/<Requirement ID>/`, replace every placeholder, then validate it. Preserve the directory after merge: it is the durable decision and evidence trail.
+将 `harness/templates/requirement/` 复制到 `requirements/<Requirement ID>/`，替换全部占位内容后执行校验。合并后保留该目录，作为长期决策与证据链。
 

@@ -1,18 +1,18 @@
-# Implementation Plan
+# 实施计划
 
-## Approach
+## 方案
 
-Describe the implementation seams and why they were chosen.
+说明实施边界及选择原因。
 
-## Steps
+## 步骤
 
-- [ ] Small, verifiable implementation step.
+- [ ] 小型、可验证的实施步骤。
 
-## Validation plan
+## 验证计划
 
-- Map commands and scenarios to acceptance criteria.
+- 将命令和场景映射到验收标准。
 
-## Rollback
+## 回退
 
-Describe how to reverse the change safely.
+说明如何安全撤销变更。
 

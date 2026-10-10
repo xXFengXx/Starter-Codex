@@ -1,109 +1,40 @@
-# REQ-0001: Establish a standardized requirement delivery Harness
+# REQ-0001：建立标准化需求交付 Harness
 
-# Why
+# 背景与原因
 
-See [Requirement Contract](./contract.md).
+详见 [Requirement Contract](./contract.md)。
 
-# What
+# 变更内容
 
-Implemented the approved plan. Changed paths:
+建立由 Git 跟踪、工具无关的需求交付 Harness，包含统一指令、状态机、模板、验证命令、CI、PR Package 和当前质量基线。
 
-```text
-AGENTS.md
-package.json
-src/renderer/App.tsx
-src/renderer/components/ConversationHistory.tsx
-src/renderer/components/DocumentDetail.tsx
-src/renderer/components/DocumentList.tsx
-src/renderer/components/ImportPanel.tsx
-src/renderer/components/StatusBar.tsx
-src/services/qa-service.ts
-.env.example
-.github/pull_request_template.md
-.github/workflows/harness.yml
-.gitignore
-.nvmrc
-CLAUDE.md
-docs/adr/0001-git-tracked-requirement-harness.md
-feature_list.json
-harness/PROCESS.md
-harness/schemas/state.schema.json
-harness/scripts/harness.mjs
-harness/templates/PULL_REQUEST.md
-harness/templates/exception.md
-harness/templates/requirement/contract.md
-harness/templates/requirement/handoff.md
-harness/templates/requirement/plan.md
-harness/templates/requirement/review-feedback.md
-harness/templates/requirement/state.json
-harness/templates/requirement/traceability.md
-harness/templates/requirement/verification.md
-harness/tests/harness.test.mjs
-package-lock.json
-requirements/REQ-0001/contract.md
-requirements/REQ-0001/design-interview.md
-requirements/REQ-0001/handoff.md
-requirements/REQ-0001/plan.md
-requirements/REQ-0001/review-feedback.md
-requirements/REQ-0001/security-baseline.md
-requirements/REQ-0001/state.json
-requirements/REQ-0001/traceability.md
-requirements/REQ-0001/verification.md
-scripts/init.ps1
-scripts/init.sh
-```
+# 需求追踪
 
-# Requirement traceability
+详见 [追踪矩阵](./traceability.md)，AC-001 至 AC-008 均为 PASS。
 
-| Acceptance criterion | Implementation | Verification | Result |
-| --- | --- | --- | --- |
-| AC-001 | `AGENTS.md`, `harness/PROCESS.md` | Contract validation and document review | PASS |
-| AC-002 | `AGENTS.md`, `CLAUDE.md` | Harness unit test and document review | PASS |
-| AC-003 | `harness/scripts/harness.mjs`, `harness/schemas/state.schema.json` | `npm test`; invalid transition smoke test | PASS |
-| AC-004 | `package.json`, `harness/scripts/harness.mjs`, `scripts/init.ps1`, `scripts/init.sh` | `npm run harness:doctor`; reset/benchmark smoke tests | PASS |
-| AC-005 | `.github/workflows/harness.yml`, `.nvmrc`, `package-lock.json` | Local equivalent `npm run harness:ci`; workflow review | PASS |
-| AC-006 | `feature_list.json`, `quality-document.md` | JSON parse and baseline review | PASS |
-| AC-007 | `requirements/REQ-0001/`, `requirements/REQ-0001/design-interview.md` | `npm run requirement:validate -- REQ-0001` | PASS |
-| AC-008 | `harness/templates/PULL_REQUEST.md`, `.github/pull_request_template.md`, generated `PR-PACKAGE.md` | `npm run harness:pr -- REQ-0001` | PASS |
+# 验证
 
+TypeScript、Harness 测试和生产构建全部通过，详见 [验证证据](./verification.md)。
 
+# 审阅指南
 
-# Verification
+1. 阅读 `contract.md` 和 `plan.md`；
+2. 审阅 Harness 策略与可执行状态约束；
+3. 对照每条追踪记录检查验证证据。
 
-Requirement: REQ-0001
-Generated: 2026-10-10T05:12:31.305Z
-Overall: PASS
+# 风险与回退
 
-| Gate | Command | Result | Duration |
-| --- | --- | --- | --- |
-| TypeScript | `npm run check` | PASS | 2610 ms |
-| Tests | `npm test` | PASS | 867 ms |
-| Build | `npm run build` | PASS | 5311 ms |
+风险等级：**medium**。回退本需求提交即可恢复旧工作流。
 
-## Failure details
+# 已知缺口与例外
 
-None.
+没有已批准的门禁例外。`feature_list.json` 中的产品缺口仍需独立需求处理。依赖基线还存在 7 项审计问题（5 项 moderate、2 项 high），修复需要单独审阅大版本升级。
 
+# 交付管控证据
 
-# Review guide
-
-1. Read `contract.md` and `plan.md`.
-2. Review Harness policy and executable state enforcement.
-3. Compare each traceability row with verification evidence.
-
-# Risk and rollback
-
-Risk: **medium**. Revert the requirement commit(s) to restore the previous workflow.
-
-# Known gaps and exceptions
-
-No approved gate exceptions. Product gaps listed in `feature_list.json` remain separate requirements. The dependency baseline has 7 audit findings (5 moderate, 2 high) in Electron/uuid dependency paths; resolving them requires separately reviewed major upgrades.
-
-# Harness evidence
-
-- [Contract](./contract.md)
-- [Plan](./plan.md)
-- [Traceability](./traceability.md)
-- [Verification](./verification.md)
-- [Review feedback](./review-feedback.md)
-- [Security baseline](./security-baseline.md)
+- [需求契约](./contract.md)
+- [实施计划](./plan.md)
+- [追踪矩阵](./traceability.md)
+- [验证证据](./verification.md)
+- [审阅反馈](./review-feedback.md)
+- [安全基线](./security-baseline.md)

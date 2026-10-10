@@ -1,59 +1,59 @@
 ---
 requirementId: REQ-0001
-title: Establish a standardized requirement delivery Harness
+title: 建立标准化需求交付 Harness
 risk: medium
 owner: xXFengXx
-source: stakeholder design interview on 2026-10-09
+source: 2026-10-09 利益相关者设计访谈
 ---
 
-# Goal
+# 目标
 
-Make every requirement handled by Codex or Cursor follow one auditable path from intake to a consistent, low-friction PR Package.
+让 Codex 或 Cursor 处理的每个需求都遵循一条可审计路径，从接收到形成一致、低阅读成本的 PR Package。
 
-# Scope
+# 范围
 
-- Establish the instruction, tools, state, environment, and feedback subsystems.
-- Normalize requirements into durable Requirement Contracts.
-- Enforce lifecycle transitions and human approval gates.
-- Provide deterministic local and CI verification commands.
-- Generate a standardized PR Package with traceability and review guidance.
-- Record the current product-quality baseline without disguising existing gaps.
+- 建立指令、工具、状态、环境和反馈五个子系统；
+- 将需求规范化为长期保存的 Requirement Contract；
+- 强制生命周期转换和人工审批门禁；
+- 提供确定性的本地与 CI 验证命令；
+- 生成包含追踪关系和审阅指南的标准 PR Package；
+- 如实记录当前产品质量基线，不掩盖既有缺口。
 
-# Non-goals
+# 非目标
 
-- Implement missing product features listed in `quality-document.md`.
-- Automatically create a remote pull request before repository credentials and provider behavior are configured.
-- Replace GitHub, Git, Codex, or Cursor with a proprietary orchestration service.
+- 实现 `quality-document.md` 中缺失的产品功能；
+- 在仓库凭据和平台行为未配置前自动创建远程 PR；
+- 使用专有编排服务替代 GitHub、Git、Codex 或 Cursor。
 
-# Constraints
+# 约束
 
-- Core workflow must be tool-independent and versioned in Git.
-- Codex and Cursor adapters must use one canonical specification.
-- Scripts must work on Windows and CI without requiring a database.
-- Tests must never reset or write real Electron user data.
-- TypeScript strict mode and existing project conventions remain in force.
+- 核心流程必须与工具无关，并由 Git 版本化；
+- Codex 和 Cursor 适配入口必须共用一份权威规范；
+- 脚本必须能在 Windows 和 CI 中运行，且不依赖数据库；
+- 测试不得重置或写入真实 Electron 用户数据；
+- 保持 TypeScript 严格模式和既有项目约定。
 
-# Acceptance criteria
+# 验收标准
 
-- **AC-001**: A single authoritative workflow describes all five Harness subsystems and the mandatory requirement-to-PR lifecycle.
-- **AC-002**: Codex and Cursor enter through thin repository instructions that reference the same canonical workflow.
-- **AC-003**: A machine-checked Requirement Contract and lifecycle state reject missing artifacts, invalid IDs, and invalid transitions.
-- **AC-004**: Repository commands provide environment diagnosis, isolated state reset, requirement validation, verification, benchmarking, and PR Package generation.
-- **AC-005**: CI calls the same Harness gates used locally with pinned dependency and Node inputs.
-- **AC-006**: The current product baseline is explicit, including missing tests and incomplete product features.
-- **AC-007**: This requirement contains a complete plan, handoff, traceability matrix, verification evidence, and review-feedback record.
-- **AC-008**: The generated PR Package maps motivation, changes, acceptance criteria, verification, review order, risks, rollback, and known gaps.
+- **AC-001**: 一份权威工作流完整说明五个 Harness 子系统和强制的需求到 PR 生命周期。
+- **AC-002**: Codex 和 Cursor 通过轻量仓库指令进入同一份权威工作流。
+- **AC-003**: 机器校验的 Requirement Contract 和生命周期状态能够拒绝缺失材料、无效 ID 和非法转换。
+- **AC-004**: 仓库命令提供环境诊断、隔离状态重置、需求校验、验证、基准和 PR Package 生成能力。
+- **AC-005**: CI 使用固定的依赖与 Node 输入，调用和本地相同的 Harness 门禁。
+- **AC-006**: 当前产品基线明确记录缺少测试及不完整功能。
+- **AC-007**: 本需求包含完整计划、交接、追踪矩阵、验证证据和审阅反馈记录。
+- **AC-008**: 生成的 PR Package 包含背景、变更、验收标准、验证、审阅顺序、风险、回退和已知缺口。
 
-# Risks
+# 风险
 
-- Workflow friction could encourage bypasses; concise commands and templates reduce the cost of compliance.
-- Markdown parsing can be weaker than a dedicated schema library; the first version validates a deliberately small format and fails closed.
-- Existing dependency installation problems may prevent initial gates; failures must remain visible in verification evidence.
+- 流程摩擦可能诱发绕过行为；使用简洁命令和模板降低遵循成本；
+- Markdown 解析能力弱于专用 schema 库；第一版只校验受控的小型格式并采用失败关闭策略；
+- 既有依赖安装问题可能阻止门禁；失败必须保留在验证证据中。
 
-# Verification expectations
+# 验证预期
 
-- Automated tests exercise environment diagnosis, valid requirement validation, and fail-closed invalid IDs.
-- `npm run check`, `npm test`, and `npm run build` pass from the pinned environment.
-- The lifecycle command prevents skips and requires a requirement-specific branch for implementation.
-- A generated `PR-PACKAGE.md` is reviewed against all acceptance criteria.
+- 自动化测试覆盖环境诊断、有效需求校验和无效 ID 的失败关闭行为；
+- `npm run check`、`npm test` 和 `npm run build` 在固定环境中通过；
+- 生命周期命令阻止跳级，并要求使用包含 Requirement ID 的实施分支；
+- 依据全部验收标准审阅生成的 `PR-PACKAGE.md`。
 

@@ -1,6 +1,6 @@
-# Review Feedback
+# 审阅反馈
 
-| Source | Finding | Decision | Follow-up | Status |
+| 来源 | 发现 | 决定 | 后续动作 | 状态 |
 | --- | --- | --- | --- | --- |
-| local review | None yet | — | — | pending |
+| 本地审阅 | 暂无 | — | — | 待处理 |
 

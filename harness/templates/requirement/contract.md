@@ -1,36 +1,36 @@
 ---
 requirementId: REQ-0000
-title: Replace with a concise title
+title: 替换为简洁标题
 risk: medium
 owner: unassigned
 source: link-or-path
 ---
 
-# Goal
+# 目标
 
-Describe the user or business outcome.
+描述用户或业务目标。
 
-# Scope
+# 范围
 
-- Included behavior.
+- 包含的行为。
 
-# Non-goals
+# 非目标
 
-- Explicitly excluded behavior.
+- 明确排除的行为。
 
-# Constraints
+# 约束
 
-- Technical, policy, compatibility, or timing constraints.
+- 技术、策略、兼容性或时间约束。
 
-# Acceptance criteria
+# 验收标准
 
-- **AC-001**: A testable outcome.
+- **AC-001**: 可测试的结果。
 
-# Risks
+# 风险
 
-- Risk and mitigation.
+- 风险及缓解方式。
 
-# Verification expectations
+# 验证预期
 
-- Required automated and manual evidence.
+- 所需自动化与人工证据。
 
