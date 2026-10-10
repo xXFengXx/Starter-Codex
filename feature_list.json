@@ -1,0 +1,15 @@
+{
+  "project": "Knowledge Base",
+  "baseline": "2026-10-09",
+  "features": [
+    { "id": "documents", "name": "Document import", "status": "partial", "evidence": "UI import action is not wired" },
+    { "id": "indexing", "name": "Document indexing", "status": "implemented", "evidence": "src/services/indexing-service.ts" },
+    { "id": "qa", "name": "Grounded Q&A", "status": "implemented", "evidence": "src/services/qa-service.ts" },
+    { "id": "history", "name": "Conversation history", "status": "partial", "evidence": "Flat history list; enhanced interaction absent" },
+    { "id": "feedback", "name": "Answer feedback", "status": "missing", "evidence": "No feedback type, persistence, IPC, or UI" },
+    { "id": "clean-state", "name": "Clean state reset", "status": "partial", "evidence": "Persistence reset exists but has no IPC or UI surface" },
+    { "id": "structured-logging", "name": "Structured logging", "status": "partial", "evidence": "Logger exists; coverage and correlation are incomplete" },
+    { "id": "automated-tests", "name": "Automated product tests", "status": "missing", "evidence": "No product test files at baseline" }
+  ]
+}
+

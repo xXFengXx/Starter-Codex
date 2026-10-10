@@ -7,8 +7,17 @@
     "dev": "node scripts/dev.js",
     "build": "tsc -p tsconfig.node.json && vite build",
     "check": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.json",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "node --test harness/tests/*.test.mjs",
+    "test:watch": "node --test --watch harness/tests/*.test.mjs",
+    "harness:doctor": "node harness/scripts/harness.mjs doctor",
+    "harness:reset": "node harness/scripts/harness.mjs reset",
+    "harness:verify": "node harness/scripts/harness.mjs verify",
+    "harness:pr": "node harness/scripts/harness.mjs pr",
+    "harness:benchmark": "node harness/scripts/harness.mjs benchmark",
+    "harness:ci": "node harness/scripts/harness.mjs ci",
+    "requirement:validate": "node harness/scripts/harness.mjs validate",
+    "requirement:status": "node harness/scripts/harness.mjs status",
+    "requirement:transition": "node harness/scripts/harness.mjs transition"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -22,7 +31,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^33.2.0",
     "typescript": "^5.7.0",
-    "vite": "^6.0.0",
-    "vitest": "^2.1.0"
+    "vite": "^6.0.0"
   }
 }

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Harness Run State",
+  "type": "object",
+  "required": ["requirementId", "state", "risk", "updatedAt", "history"],
+  "properties": {
+    "requirementId": { "type": "string", "pattern": "^REQ-[0-9]{4,}$" },
+    "state": { "enum": ["intake", "clarified", "planned", "approved", "implementing", "verifying", "review-ready", "completed", "blocked", "cancelled"] },
+    "risk": { "enum": ["low", "medium", "high"] },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "blockedFrom": { "type": "string" },
+    "history": { "type": "array" }
+  },
+  "additionalProperties": false
+}
+

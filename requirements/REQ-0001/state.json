@@ -1,0 +1,120 @@
+{
+  "requirementId": "REQ-0001",
+  "state": "review-ready",
+  "risk": "medium",
+  "updatedAt": "2026-10-10T05:12:41.682Z",
+  "history": [
+    {
+      "from": null,
+      "to": "intake",
+      "actor": "Codex",
+      "at": "2026-10-09T13:00:00.000Z",
+      "note": "Stakeholder requested a standardized requirement-to-PR Harness."
+    },
+    {
+      "from": "intake",
+      "to": "clarified",
+      "actor": "xXFengXx",
+      "at": "2026-10-09T13:10:00.000Z",
+      "note": "Scope and mandatory gates confirmed in design round one."
+    },
+    {
+      "from": "clarified",
+      "to": "planned",
+      "actor": "xXFengXx",
+      "at": "2026-10-09T13:20:00.000Z",
+      "note": "Lifecycle, state, branch, exception, and automation model approved."
+    },
+    {
+      "from": "planned",
+      "to": "approved",
+      "actor": "xXFengXx",
+      "at": "2026-10-09T13:25:00.000Z",
+      "note": "File model, feedback boundary, CI, baseline, and delivery scope approved."
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-09T13:30:00.000Z",
+      "note": "Stakeholder gave final authorization to implement."
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-09T14:10:58.234Z",
+      "note": "Implementation artifacts complete; begin mandatory gates."
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-09T14:16:14.008Z",
+      "note": "All mandatory gates pass and PR Package generated."
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-09T14:17:51.471Z",
+      "note": "Review feedback requires lifecycle and PR file-list corrections."
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-09T14:17:52.624Z",
+      "note": "Review corrections complete; rerun all gates."
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-09T14:18:29.674Z",
+      "note": "Review corrections verified; refreshed PR Package."
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-09T14:19:09.236Z",
+      "note": "PR Package parser correction requested by review."
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-09T14:19:10.162Z",
+      "note": "Parser correction complete; rerun mandatory gates."
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-09T14:19:46.713Z",
+      "note": "Final PR Package parser correction verified."
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-10T05:11:15.187Z",
+      "note": "Stakeholder requested the complete design interview as a durable document."
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-10T05:12:06.628Z",
+      "note": "Design interview document completed; rerun mandatory gates."
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-10T05:12:41.682Z",
+      "note": "Design interview document verified and included in refreshed PR Package."
+    }
+  ]
+}
