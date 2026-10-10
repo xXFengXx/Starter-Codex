@@ -1,32 +1,32 @@
-# Why
+# 背景与原因
 
-<!-- Outcome and context. -->
+<!-- 说明目标和背景。 -->
 
-# What
+# 变更内容
 
-<!-- Concrete changes, grouped by behavior. -->
+<!-- 按行为归纳具体改动。 -->
 
-# Requirement traceability
+# 需求追踪
 
-<!-- AC -> implementation -> verification result. -->
+<!-- 验收标准 -> 实现 -> 验证结果。 -->
 
-# Verification
+# 验证
 
-<!-- Exact commands, results, and manual scenarios. -->
+<!-- 精确命令、结果和人工场景。 -->
 
-# Review guide
+# 审阅指南
 
-<!-- Recommended reading order and risk hotspots. -->
+<!-- 推荐阅读顺序和风险重点。 -->
 
-# Risk and rollback
+# 风险与回退
 
-<!-- Risk level, failure modes, and reversal procedure. -->
+<!-- 风险等级、失败模式和回退方法。 -->
 
-# Known gaps and exceptions
+# 已知缺口与例外
 
-<!-- Explicitly say None when empty. -->
+<!-- 没有内容时明确写“无”。 -->
 
-# Harness evidence
+# 交付管控证据
 
-<!-- Link contract, plan, traceability, verification, and feedback. -->
+<!-- 链接契约、计划、追踪、验证和反馈。 -->
 

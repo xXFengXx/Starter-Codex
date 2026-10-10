@@ -66,16 +66,16 @@ function validate(id, { quiet = false } = {}) {
   }
   if (meta.requirementId !== id) errors.push('contract.md requirementId does not match its directory.');
   if (meta.risk !== state.risk) errors.push('Risk differs between contract.md and state.json.');
-  for (const heading of ['Goal', 'Scope', 'Non-goals', 'Constraints', 'Acceptance criteria', 'Risks', 'Verification expectations']) {
-    if (!new RegExp(`^# ${heading}$`, 'mi').test(contract)) errors.push(`Missing contract section: ${heading}`);
+  for (const [heading, legacyHeading] of [['目标', 'Goal'], ['范围', 'Scope'], ['非目标', 'Non-goals'], ['约束', 'Constraints'], ['验收标准', 'Acceptance criteria'], ['风险', 'Risks'], ['验证预期', 'Verification expectations']]) {
+    if (!new RegExp(`^# (${heading}|${legacyHeading})$`, 'mi').test(contract)) errors.push(`Missing contract section: ${heading}`);
   }
   const criteria = acceptanceCriteria(contract);
   if (criteria.length === 0) errors.push('At least one numbered acceptance criterion is required.');
   const traceability = read(join(dir, 'traceability.md'));
   for (const criterion of criteria) if (!traceability.includes(`| ${criterion} |`)) errors.push(`Traceability row missing for ${criterion}`);
   if (['review-ready', 'completed'].includes(state.state)) {
-    if (/\|\s*pending\s*\|/i.test(traceability)) errors.push('Traceability still contains pending results.');
-    if (!/^Overall: PASS$/mi.test(read(join(dir, 'verification.md')))) errors.push('Latest verification is not PASS.');
+    if (/\|\s*(pending|待处理)\s*\|/i.test(traceability)) errors.push('Traceability still contains pending results.');
+    if (!/^(Overall: PASS|总体结果：PASS)$/mi.test(read(join(dir, 'verification.md')))) errors.push('Latest verification is not PASS.');
   }
   if (errors.length) fail(errors.join('\n'));
   if (!quiet) console.log(`PASS ${id}: contract, state, and ${criteria.length} acceptance criteria are valid.`);
@@ -96,7 +96,7 @@ function transition(id, next, actor, note = '') {
     const branch = execFileSync('git', ['branch', '--show-current'], { cwd: ROOT, encoding: 'utf8' }).trim();
     if (!branch.includes(id)) fail(`Branch '${branch}' does not contain ${id}.`);
   }
-  if (next === 'review-ready' && !/^Overall: PASS$/mi.test(read(join(dir, 'verification.md')))) fail('Verification must PASS before review-ready.');
+  if (next === 'review-ready' && !/^(Overall: PASS|总体结果：PASS)$/mi.test(read(join(dir, 'verification.md')))) fail('Verification must PASS before review-ready.');
   if (next === 'completed' && !existsSync(join(dir, 'PR-PACKAGE.md'))) fail('PR-PACKAGE.md is required before completion.');
   const now = new Date().toISOString();
   const previous = state.state;
@@ -123,16 +123,16 @@ function verify(id) {
   if (state.state !== 'verifying') fail(`Verification requires state 'verifying', found '${state.state}'.`);
   resetRuntime();
   const results = [
-    runGate('TypeScript', 'npm', ['run', 'check']),
-    runGate('Tests', 'npm', ['test']),
-    runGate('Build', 'npm', ['run', 'build']),
+    runGate('类型检查', 'npm', ['run', 'check']),
+    runGate('测试', 'npm', ['test']),
+    runGate('构建', 'npm', ['run', 'build']),
   ];
   const overall = results.every((result) => result.status === 'PASS') ? 'PASS' : 'FAIL';
-  const lines = ['# Verification Evidence', '', `Requirement: ${id}`, `Generated: ${new Date().toISOString()}`, `Overall: ${overall}`, '', '| Gate | Command | Result | Duration |', '| --- | --- | --- | --- |'];
+  const lines = ['# 验证证据', '', `需求：${id}`, `生成时间：${new Date().toISOString()}`, `总体结果：${overall}`, '', '| 门禁 | 命令 | 结果 | 耗时 |', '| --- | --- | --- | --- |'];
   for (const result of results) lines.push(`| ${result.label} | \`${result.command}\` | ${result.status} | ${result.durationMs} ms |`);
-  lines.push('', '## Failure details', '');
+  lines.push('', '## 失败详情', '');
   const failures = results.filter((result) => result.status === 'FAIL');
-  if (!failures.length) lines.push('None.');
+  if (!failures.length) lines.push('无。');
   for (const result of failures) lines.push(`### ${result.label}`, '', '```text', result.output.slice(-6000), '```', '');
   writeFileSync(join(requirementDir(id), 'verification.md'), `${lines.join('\n')}\n`);
   console.log(`${overall} ${id}: verification evidence written.`);
@@ -150,7 +150,8 @@ function generatePr(id) {
     .map((line) => line.slice(3))
     .filter((path) => !path.endsWith('PR-PACKAGE.md'))
     .join('\n') || 'No branch diff detected.';
-  const content = `# ${id}: ${meta.title}\n\n# Why\n\nSee [Requirement Contract](./contract.md).\n\n# What\n\nImplemented the approved plan. Changed paths:\n\n\`\`\`text\n${changed}\n\`\`\`\n\n# Requirement traceability\n\n${read(join(dir, 'traceability.md')).replace(/^# Traceability\s*/i, '')}\n\n# Verification\n\n${read(join(dir, 'verification.md')).replace(/^# Verification Evidence\s*/i, '')}\n\n# Review guide\n\n1. Read \`contract.md\` and \`plan.md\`.\n2. Review Harness policy and executable state enforcement.\n3. Compare each traceability row with verification evidence.\n\n# Risk and rollback\n\nRisk: **${state.risk}**. Revert the requirement commit(s) to restore the previous workflow.\n\n# Known gaps and exceptions\n\nNo approved gate exceptions. Product gaps listed in \`feature_list.json\` remain separate requirements. The dependency baseline has 7 audit findings (5 moderate, 2 high) in Electron/uuid dependency paths; resolving them requires separately reviewed major upgrades.\n\n# Harness evidence\n\n- [Contract](./contract.md)\n- [Plan](./plan.md)\n- [Traceability](./traceability.md)\n- [Verification](./verification.md)\n- [Review feedback](./review-feedback.md)\n- [Security baseline](./security-baseline.md)\n`;
+  const securityEvidence = existsSync(join(dir, 'security-baseline.md')) ? '- [安全基线](./security-baseline.md)\n' : '';
+  const content = `# ${id}：${meta.title}\n\n# 背景与原因\n\n详见 [Requirement Contract](./contract.md)。\n\n# 变更内容\n\n已执行获批计划。变更路径：\n\n\`\`\`text\n${changed}\n\`\`\`\n\n# 需求追踪\n\n${read(join(dir, 'traceability.md')).replace(/^# (Traceability|追踪矩阵)\s*/i, '')}\n\n# 验证\n\n${read(join(dir, 'verification.md')).replace(/^# (Verification Evidence|验证证据)\s*/i, '')}\n\n# 审阅指南\n\n1. 阅读 \`contract.md\` 和 \`plan.md\`；\n2. 审阅 Harness 策略与可执行状态约束；\n3. 对照每条追踪记录检查验证证据。\n\n# 风险与回退\n\n风险等级：**${state.risk}**。回退本需求提交即可恢复之前的工作流。\n\n# 已知缺口与例外\n\n没有已批准的门禁例外。未解决事项以 Requirement Contract 和审阅反馈中的记录为准。\n\n# 交付管控证据\n\n- [需求契约](./contract.md)\n- [实施计划](./plan.md)\n- [追踪矩阵](./traceability.md)\n- [验证证据](./verification.md)\n- [审阅反馈](./review-feedback.md)\n${securityEvidence}`;
   writeFileSync(join(dir, 'PR-PACKAGE.md'), content);
   console.log(`PASS ${id}: PR-PACKAGE.md generated.`);
 }

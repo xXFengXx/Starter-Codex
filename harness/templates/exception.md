@@ -4,15 +4,15 @@ approver: human-name
 expiresWhen: explicit-condition
 ---
 
-# Exception reason
+# 例外原因
 
-Explain why the gate cannot currently pass.
+说明门禁当前无法通过的原因。
 
-# Impact
+# 影响
 
-Describe the user and engineering impact.
+说明对用户和工程的影响。
 
-# Compensating verification
+# 补偿验证
 
-Describe the additional evidence that reduces the risk.
+说明用于降低风险的附加证据。
 

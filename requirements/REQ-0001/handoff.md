@@ -1,31 +1,31 @@
-# Session Handoff
+# 会话交接
 
-## Current state
+## 当前状态
 
 `review-ready`
 
-## Completed
+## 已完成
 
-- Stakeholder approved all design-tree decisions.
-- Git repository and private GitHub remote were created by the stakeholder.
-- Requirement-specific implementation branch created.
-- Canonical instructions, templates, CLI, CI, and baseline artifacts added.
-- Mandatory TypeScript, test, and production-build gates pass.
-- Removed unused Vitest dependency, reducing the audit baseline from 13 findings (including 2 critical) to 7 findings (5 moderate, 2 high).
-- Generated the standardized PR Package and entered `review-ready` through the enforced state machine.
-- Consolidated all Q1-Q29 design questions and decisions in `design-interview.md`.
+- 利益相关者批准全部设计树决策；
+- 用户创建 Git 仓库和 GitHub 私有远程仓库；
+- 建立独立实施分支；
+- 增加权威指令、模板、CLI、CI 和基线材料；
+- TypeScript、测试和生产构建门禁全部通过；
+- 删除未使用的 Vitest，将依赖审计从 13 项（含 2 项 critical）降至 7 项（5 项 moderate、2 项 high）；
+- 生成标准 PR Package，并通过状态机进入 `review-ready`；
+- 将 Q1–Q29 设计问题与决定汇总到 `design-interview.md`。
 
-## Decisions
+## 决策
 
-- Git-tracked, tool-independent Harness is the single source of truth.
-- Human approval is mandatory before implementation and PR publication.
-- Product feature gaps remain separate requirements.
+- Git 跟踪、工具无关的 Harness 是唯一事实来源；
+- 实施前和 PR 发布前必须人工批准；
+- 产品功能缺口作为独立需求处理。
 
-## Active failures
+## 当前失败
 
-- Electron/uuid remediation requires separately reviewed major upgrades.
+- Electron/uuid 修复需要单独审阅的大版本升级。
 
-## Next action
+## 下一步
 
-Review the final diff and PR Package, then commit and publish the requirement branch when authorized.
+审阅最终差异和 PR Package，在获准后提交并发布需求分支。
 

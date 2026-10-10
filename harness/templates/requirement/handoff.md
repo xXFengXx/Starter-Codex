@@ -1,22 +1,22 @@
-# Session Handoff
+# 会话交接
 
-## Current state
+## 当前状态
 
 `intake`
 
-## Completed
+## 已完成
 
-- Requirement directory created.
+- 已创建需求目录。
 
-## Decisions
+## 决策
 
-- None yet.
+- 暂无。
 
-## Active failures
+## 当前失败
 
-- None known.
+- 暂无已知失败。
 
-## Next action
+## 下一步
 
-Complete and validate the Requirement Contract.
+完成并校验 Requirement Contract。
 

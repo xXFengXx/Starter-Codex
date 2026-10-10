@@ -1,27 +1,27 @@
-# Implementation Plan
+# 实施计划
 
-## Approach
+## 方案
 
-Use Git-tracked Markdown for human review, JSON for lifecycle state, and a dependency-free Node CLI for enforcement. Keep agent adapters small and make local and CI checks call the same commands.
+使用 Git 跟踪的 Markdown 供人类审阅，使用 JSON 保存生命周期状态，并通过无第三方运行时依赖的 Node CLI 强制执行规则。Agent 适配入口保持轻量，本地和 CI 调用相同命令。
 
-## Steps
+## 步骤
 
-- [x] Establish shared vocabulary and record the architectural decision.
-- [x] Create canonical instructions and thin tool adapters.
-- [x] Add templates, lifecycle schema, and executable validation.
-- [x] Add isolated runtime reset, verification, benchmark, and PR generation commands.
-- [x] Add CI, environment pins, feature baseline, and PR template.
-- [x] Install dependencies and execute every mandatory gate.
-- [x] Generate and review the PR Package.
+- [x] 建立共享词汇并记录架构决策；
+- [x] 创建权威指令和轻量工具适配入口；
+- [x] 增加模板、生命周期 schema 和可执行校验；
+- [x] 增加隔离运行时重置、验证、基准和 PR 生成命令；
+- [x] 增加 CI、环境固定、功能基线和 PR 模板；
+- [x] 安装依赖并执行全部强制门禁；
+- [x] 生成并审阅 PR Package。
 
-## Validation plan
+## 验证计划
 
-- Validate REQ-0001 and run the Harness unit tests.
-- Run TypeScript checks, the test suite, and production build through `harness:verify`.
-- Exercise invalid input and transition behavior.
-- Generate the PR Package and inspect its acceptance-criteria mapping.
+- 校验 REQ-0001 并运行 Harness 单元测试；
+- 通过 `harness:verify` 运行 TypeScript 检查、测试套件和生产构建；
+- 验证无效输入和非法状态转换；
+- 生成 PR Package 并检查验收标准映射。
 
-## Rollback
+## 回退
 
-Revert the Harness requirement commit. Product runtime code and persisted user data are not migrated by this requirement.
+回退 Harness 需求提交。本需求不迁移产品运行时代码或持久化用户数据。
 
