@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0005",
-  "state": "planned",
+  "state": "review-ready",
   "risk": "high",
-  "updatedAt": "2026-10-12T08:45:00.040Z",
+  "updatedAt": "2026-10-12T11:10:20.707Z",
   "history": [
     {
       "from": null,
@@ -24,6 +24,55 @@
       "actor": "Codex",
       "at": "2026-10-12T08:45:00.040Z",
       "note": "实施计划与验收追踪已完成"
+    },
+    {
+      "from": "planned",
+      "to": "approved",
+      "actor": "xXFengXx",
+      "at": "2026-10-12T10:51:05.927Z",
+      "note": "用户明确确认 REQ-0005 需求评审通过"
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-12T10:51:10.840Z",
+      "note": "已获人工批准，按 AC-001 至 AC-008 开始实施"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-12T11:00:18.456Z",
+      "note": "实现与追踪信息已更新，开始执行完整门禁"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-12T11:07:40.855Z",
+      "note": "全部八类门禁通过，追踪矩阵和 PR Package 已更新"
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-12T11:08:07.271Z",
+      "note": "PR Package 审阅发现依赖基线缺少直接链接，退回补强"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-12T11:08:58.168Z",
+      "note": "依赖审计基线已加入 PR Package，重新执行完整门禁"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-12T11:10:20.707Z",
+      "note": "最终实现、证据链接和全部门禁均已通过"
     }
   ]
 }

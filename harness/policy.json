@@ -1,0 +1,12 @@
+{
+  "baseRef": "origin/main",
+  "strongEvidenceRequiredAfter": "2026-10-12T00:00:00.000Z",
+  "authorizedApprovers": ["xXFengXx"],
+  "dependencyBaseline": {
+    "info": 0,
+    "low": 0,
+    "moderate": 5,
+    "high": 2,
+    "critical": 0
+  }
+}

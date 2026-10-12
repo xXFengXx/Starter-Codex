@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Requirement Approval Evidence",
+  "type": "object",
+  "required": ["requirementId", "approver", "source", "approvedAt", "snapshotHash"],
+  "properties": {
+    "requirementId": { "type": "string", "pattern": "^REQ-[0-9]{4,}$" },
+    "approver": { "type": "string", "minLength": 1 },
+    "source": { "enum": ["github", "local-confirmation"] },
+    "approvedAt": { "type": "string", "format": "date-time" },
+    "snapshotHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  },
+  "additionalProperties": false
+}

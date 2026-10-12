@@ -1,0 +1,10 @@
+{
+  "allowedPaths": [
+    "AGENTS.md",
+    "GLOSSARY.md",
+    "docs/adr",
+    "harness",
+    "package.json",
+    "requirements/REQ-0005"
+  ]
+}

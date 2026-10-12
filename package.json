@@ -17,6 +17,7 @@
     "harness:ci": "node harness/scripts/harness.mjs ci",
     "requirement:validate": "node harness/scripts/harness.mjs validate",
     "requirement:status": "node harness/scripts/harness.mjs status",
+    "harness:approval": "node harness/scripts/harness.mjs approval",
     "requirement:transition": "node harness/scripts/harness.mjs transition"
   },
   "dependencies": {

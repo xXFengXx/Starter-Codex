@@ -3,10 +3,12 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { performance } from 'node:perf_hooks';
+import { auditSummary, auditWithinBaseline, contentHash, parseExceptionRecord, sensitiveFindings, validateApprovalEvidence, validatePrEvidence } from '../lib/evidence.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const REQUIREMENTS = join(ROOT, 'requirements');
 const RUNTIME = join(ROOT, '.harness', 'runtime');
+const POLICY_PATH = join(ROOT, 'harness', 'policy.json');
 const states = ['intake', 'clarified', 'planned', 'approved', 'implementing', 'verifying', 'review-ready', 'completed', 'blocked', 'cancelled'];
 const forward = {
   intake: 'clarified', clarified: 'planned', planned: 'approved', approved: 'implementing',
@@ -26,6 +28,39 @@ function requirementDir(id) {
 
 function read(path) {
   return readFileSync(path, 'utf8');
+}
+
+function policy() {
+  const value = JSON.parse(read(POLICY_PATH));
+  if (!value.baseRef || !Number.isFinite(Date.parse(value.strongEvidenceRequiredAfter)) || !Array.isArray(value.authorizedApprovers) || !value.dependencyBaseline) fail('harness/policy.json is incomplete.');
+  return value;
+}
+
+function snapshotHash(id) {
+  const dir = requirementDir(id);
+  return contentHash(['contract.md', 'plan.md'].map((name) => [name, read(join(dir, name))]));
+}
+
+function approvalEvidence(id) {
+  const path = join(requirementDir(id), 'approval.json');
+  if (!existsSync(path)) fail('approval.json is required after approval.');
+  const evidence = JSON.parse(read(path));
+  const errors = validateApprovalEvidence(evidence, { requirementId: id, snapshotHash: snapshotHash(id), authorizedApprovers: policy().authorizedApprovers });
+  if (errors.length) fail(errors.join('\n'));
+  return evidence;
+}
+
+function writeApprovalEvidence(id, approver, source = 'local-confirmation') {
+  if (!policy().authorizedApprovers.includes(approver)) fail(`Approver '${approver}' is not authorized by harness/policy.json.`);
+  const evidence = { requirementId: id, approver, source, approvedAt: new Date().toISOString(), snapshotHash: snapshotHash(id) };
+  writeFileSync(join(requirementDir(id), 'approval.json'), `${JSON.stringify(evidence, null, 2)}\n`);
+  console.log(`PASS ${id}: approval snapshot recorded.`);
+  return evidence;
+}
+
+function requiresStrongApproval(state) {
+  const approved = state.history.findLast((entry) => entry.to === 'approved');
+  return approved && Date.parse(approved.at) >= Date.parse(policy().strongEvidenceRequiredAfter);
 }
 
 function readState(id) {
@@ -77,6 +112,9 @@ function validate(id, { quiet = false } = {}) {
     if (/\|\s*(pending|待处理)\s*\|/i.test(traceability)) errors.push('Traceability still contains pending results.');
     if (!/^(Overall: PASS|总体结果：PASS)$/mi.test(read(join(dir, 'verification.md')))) errors.push('Latest verification is not PASS.');
   }
+  if (['approved', 'implementing', 'verifying', 'review-ready', 'completed'].includes(state.state) && requiresStrongApproval(state)) {
+    try { approvalEvidence(id); } catch (error) { errors.push(error.message); }
+  }
   if (errors.length) fail(errors.join('\n'));
   if (!quiet) console.log(`PASS ${id}: contract, state, and ${criteria.length} acceptance criteria are valid.`);
   return { criteria, meta, state };
@@ -92,12 +130,21 @@ function transition(id, next, actor, note = '') {
   if (state.state === 'review-ready' && next === 'implementing') allowed = true;
   if (!allowed) fail(`Invalid transition: ${state.state} -> ${next}`);
   if (['clarified', 'planned', 'approved', 'implementing', 'verifying', 'review-ready', 'completed'].includes(next)) validate(id, { quiet: true });
+  if (next === 'approved') writeApprovalEvidence(id, actor);
+  if (['implementing', 'verifying', 'review-ready', 'completed'].includes(next)) approvalEvidence(id);
   if (next === 'implementing') {
     const branch = execFileSync('git', ['branch', '--show-current'], { cwd: ROOT, encoding: 'utf8' }).trim();
     if (!branch.includes(id)) fail(`Branch '${branch}' does not contain ${id}.`);
   }
   if (next === 'review-ready' && !/^(Overall: PASS|总体结果：PASS)$/mi.test(read(join(dir, 'verification.md')))) fail('Verification must PASS before review-ready.');
-  if (next === 'completed' && !existsSync(join(dir, 'PR-PACKAGE.md'))) fail('PR-PACKAGE.md is required before completion.');
+  if (next === 'completed') {
+    if (!existsSync(join(dir, 'PR-PACKAGE.md'))) fail('PR-PACKAGE.md is required before completion.');
+    const evidencePath = join(dir, 'pr-evidence.json');
+    if (!existsSync(evidencePath)) fail('pr-evidence.json is required before completion.');
+    const evidence = JSON.parse(read(evidencePath));
+    const errors = validatePrEvidence(evidence, policy().authorizedApprovers);
+    if (errors.length) fail(errors.join('\n'));
+  }
   const now = new Date().toISOString();
   const previous = state.state;
   if (next === 'blocked') state.blockedFrom = previous;
@@ -118,14 +165,120 @@ function runGate(label, command, args) {
   };
 }
 
+function runEvidenceGate(label, command, check) {
+  const started = performance.now();
+  try {
+    const output = check();
+    return { label, command, status: 'PASS', durationMs: Math.round(performance.now() - started), output };
+  } catch (error) {
+    return { label, command, status: 'FAIL', durationMs: Math.round(performance.now() - started), output: error.message };
+  }
+}
+
+function baseCommit() {
+  const configured = policy().baseRef;
+  try { return execFileSync('git', ['merge-base', configured, 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim(); }
+  catch { fail(`Unable to resolve configured baseRef '${configured}'. Fetch the default branch before verification.`); }
+}
+
+function changedPaths() {
+  const base = baseCommit();
+  const outputs = [
+    execFileSync('git', ['diff', '--name-only', `${base}...HEAD`], { cwd: ROOT, encoding: 'utf8' }),
+    execFileSync('git', ['diff', '--name-only'], { cwd: ROOT, encoding: 'utf8' }),
+    execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: ROOT, encoding: 'utf8' }),
+    execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: ROOT, encoding: 'utf8' }),
+  ];
+  return [...new Set(outputs.join('\n').split(/\r?\n/).filter(Boolean))].sort();
+}
+
+function branchPatch() {
+  const base = baseCommit();
+  const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: ROOT, encoding: 'utf8' })
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((pathName) => {
+      try { return read(join(ROOT, pathName)).split(/\r?\n/).map((line) => `+${line}`).join('\n'); }
+      catch { return ''; }
+    })
+    .join('\n');
+  return [
+    execFileSync('git', ['diff', '--no-ext-diff', `${base}...HEAD`], { cwd: ROOT, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 }),
+    execFileSync('git', ['diff', '--no-ext-diff'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 }),
+    execFileSync('git', ['diff', '--cached', '--no-ext-diff'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 }),
+    untracked,
+  ].join('\n');
+}
+
+function scopeGate(id) {
+  const path = join(requirementDir(id), 'scope.json');
+  if (!existsSync(path)) fail('scope.json is required for verification.');
+  const scope = JSON.parse(read(path));
+  if (!Array.isArray(scope.allowedPaths) || scope.allowedPaths.length === 0) fail('scope.json allowedPaths must not be empty.');
+  const paths = changedPaths();
+  const outside = paths.filter((pathName) => !scope.allowedPaths.some((prefix) => pathName === prefix || pathName.startsWith(prefix.endsWith('/') ? prefix : `${prefix}/`)));
+  if (outside.length) fail(`Changed paths outside approved scope:\n${outside.join('\n')}`);
+  return `${paths.length} changed paths are within approved scope.`;
+}
+
+function sensitiveGate() {
+  const findings = sensitiveFindings(branchPatch());
+  if (findings.length) fail(`Potential sensitive information detected: ${findings.join(', ')}`);
+  return 'No credential patterns detected in the branch patch.';
+}
+
+function dependencyGate() {
+  const result = spawnSync('npm', ['audit', '--json'], { cwd: ROOT, encoding: 'utf8', shell: process.platform === 'win32', maxBuffer: 10 * 1024 * 1024 });
+  let parsed;
+  try { parsed = JSON.parse(result.stdout || result.stderr); } catch { fail('npm audit did not return valid JSON.'); }
+  const actual = auditSummary(parsed);
+  if (!auditWithinBaseline(actual, policy().dependencyBaseline)) fail(`Dependency vulnerabilities exceed baseline: ${JSON.stringify(actual)}`);
+  return `Dependency audit did not exceed recorded baseline: ${JSON.stringify(actual)}`;
+}
+
+function exceptionGate(id) {
+  const dir = requirementDir(id);
+  const names = readdirSync(dir).filter((name) => /^exception(?:-.+)?\.md$/i.test(name));
+  const invalid = names.flatMap((name) => {
+    const parsed = parseExceptionRecord(read(join(dir, name)));
+    const errors = [...parsed.errors];
+    if (parsed.meta?.approver && !policy().authorizedApprovers.includes(parsed.meta.approver)) errors.push('exception approver is not authorized');
+    return errors.map((error) => `${name}: ${error}`);
+  });
+  if (invalid.length) fail(invalid.join('\n'));
+  return names.length ? `${names.length} exception record(s) are valid.` : 'No exception records.';
+}
+
+function baselineGate() {
+  const baselineDir = join(RUNTIME, 'baseline');
+  const base = baseCommit();
+  try {
+    execFileSync('git', ['worktree', 'add', '--detach', baselineDir, base], { cwd: ROOT, encoding: 'utf8', stdio: 'pipe' });
+    const install = spawnSync('npm', ['ci'], { cwd: baselineDir, encoding: 'utf8', shell: process.platform === 'win32' });
+    if (install.status !== 0) fail(`Baseline npm ci failed:\n${`${install.stdout ?? ''}${install.stderr ?? ''}`.slice(-4000)}`);
+    for (const [label, args] of [['check', ['run', 'check']], ['test', ['test']], ['build', ['run', 'build']]]) {
+      const result = spawnSync('npm', args, { cwd: baselineDir, encoding: 'utf8', shell: process.platform === 'win32' });
+      if (result.status !== 0) fail(`Default-branch baseline ${label} failed:\n${`${result.stdout ?? ''}${result.stderr ?? ''}`.slice(-4000)}`);
+    }
+    return `Default-branch baseline ${base.slice(0, 12)} passed check, test, and build in an isolated worktree.`;
+  } finally {
+    try { execFileSync('git', ['worktree', 'remove', '--force', baselineDir], { cwd: ROOT, stdio: 'ignore' }); } catch { /* best effort cleanup */ }
+  }
+}
+
 function verify(id) {
   const { state } = validate(id, { quiet: true });
   if (state.state !== 'verifying') fail(`Verification requires state 'verifying', found '${state.state}'.`);
   resetRuntime();
   const results = [
+    runEvidenceGate('默认分支基线', 'isolated base check/test/build', baselineGate),
     runGate('类型检查', 'npm', ['run', 'check']),
     runGate('测试', 'npm', ['test']),
     runGate('构建', 'npm', ['run', 'build']),
+    runEvidenceGate('范围检查', 'harness scope audit', () => scopeGate(id)),
+    runEvidenceGate('敏感信息检查', 'harness sensitive-data audit', sensitiveGate),
+    runEvidenceGate('依赖审计', 'npm audit --json', dependencyGate),
+    runEvidenceGate('例外记录检查', 'harness exception audit', () => exceptionGate(id)),
   ];
   const overall = results.every((result) => result.status === 'PASS') ? 'PASS' : 'FAIL';
   const lines = ['# 验证证据', '', `需求：${id}`, `生成时间：${new Date().toISOString()}`, `总体结果：${overall}`, '', '| 门禁 | 命令 | 结果 | 耗时 |', '| --- | --- | --- | --- |'];
@@ -143,16 +296,12 @@ function generatePr(id) {
   const { meta, state } = validate(id, { quiet: true });
   if (!['verifying', 'review-ready'].includes(state.state)) fail('PR Package may only be generated during verifying or review-ready.');
   const dir = requirementDir(id);
-  const statusOutput = execFileSync('git', ['status', '--short', '--untracked-files=all'], { cwd: ROOT, encoding: 'utf8' });
-  const changed = statusOutput
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => line.slice(3))
-    .filter((path) => !path.endsWith('PR-PACKAGE.md'))
-    .join('\n') || 'No branch diff detected.';
-  const securityEvidence = existsSync(join(dir, 'security-baseline.md')) ? '- [安全基线](./security-baseline.md)\n' : '';
+  const changed = changedPaths().filter((path) => !path.endsWith('PR-PACKAGE.md')).join('\n') || 'No branch diff detected.';
+  const securityEvidence = `${existsSync(join(dir, 'security-baseline.md')) ? '- [安全基线](./security-baseline.md)\n' : ''}${existsSync(join(ROOT, 'harness', 'dependency-baseline.md')) ? '- [依赖审计基线](../../harness/dependency-baseline.md)\n' : ''}`;
   const content = `# ${id}：${meta.title}\n\n# 背景与原因\n\n详见 [Requirement Contract](./contract.md)。\n\n# 变更内容\n\n已执行获批计划。变更路径：\n\n\`\`\`text\n${changed}\n\`\`\`\n\n# 需求追踪\n\n${read(join(dir, 'traceability.md')).replace(/^# (Traceability|追踪矩阵)\s*/i, '')}\n\n# 验证\n\n${read(join(dir, 'verification.md')).replace(/^# (Verification Evidence|验证证据)\s*/i, '')}\n\n# 审阅指南\n\n1. 阅读 \`contract.md\` 和 \`plan.md\`；\n2. 审阅 Harness 策略与可执行状态约束；\n3. 对照每条追踪记录检查验证证据。\n\n# 风险与回退\n\n风险等级：**${state.risk}**。回退本需求提交即可恢复之前的工作流。\n\n# 已知缺口与例外\n\n没有已批准的门禁例外。未解决事项以 Requirement Contract 和审阅反馈中的记录为准。\n\n# 交付管控证据\n\n- [需求契约](./contract.md)\n- [实施计划](./plan.md)\n- [追踪矩阵](./traceability.md)\n- [验证证据](./verification.md)\n- [审阅反馈](./review-feedback.md)\n${securityEvidence}`;
-  writeFileSync(join(dir, 'PR-PACKAGE.md'), content);
+  const exceptionEvidence = readdirSync(dir).filter((name) => /^exception(?:-.+)?\.md$/i.test(name)).map((name) => `- [例外记录](./${name})`).join('\n') || '没有已批准的门禁例外。';
+  const finalizedContent = content.replace('没有已批准的门禁例外。未解决事项以 Requirement Contract 和审阅反馈中的记录为准。', exceptionEvidence);
+  writeFileSync(join(dir, 'PR-PACKAGE.md'), finalizedContent);
   console.log(`PASS ${id}: PR-PACKAGE.md generated.`);
 }
 
@@ -166,11 +315,13 @@ function resetRuntime() {
 }
 
 function doctor() {
-  const required = ['AGENTS.md', 'CLAUDE.md', 'harness/PROCESS.md', 'package.json', '.nvmrc'];
+  const required = ['AGENTS.md', 'CLAUDE.md', 'harness/PROCESS.md', 'harness/policy.json', 'package.json', '.nvmrc'];
   for (const path of required) if (!existsSync(join(ROOT, path))) fail(`Missing ${path}`);
   const major = Number(process.versions.node.split('.')[0]);
   if (major < 22) fail(`Node 22+ required; found ${process.version}`);
   execFileSync('git', ['--version'], { cwd: ROOT, stdio: 'ignore' });
+  policy();
+  baseCommit();
   console.log(`PASS environment: Node ${process.version}, Git available, Harness files present.`);
 }
 
@@ -200,12 +351,14 @@ try {
   else if (command === 'status') console.log(JSON.stringify(readState(id), null, 2));
   else if (command === 'transition') {
     transition(id, target, rest[0] ?? '', rest.slice(1).join(' '));
+  } else if (command === 'approval') {
+    writeApprovalEvidence(id, target, rest[0] ?? 'local-confirmation');
   } else if (command === 'reset') resetRuntime();
   else if (command === 'verify') verify(id);
   else if (command === 'pr') generatePr(id);
   else if (command === 'benchmark') benchmark();
   else if (command === 'ci') ci();
-  else fail('Usage: harness.mjs <doctor|validate|status|transition|reset|verify|pr|benchmark|ci>');
+  else fail('Usage: harness.mjs <doctor|validate|status|transition|approval|reset|verify|pr|benchmark|ci>');
 } catch (error) {
   console.error(`FAIL ${error.message}`);
   process.exitCode = 1;

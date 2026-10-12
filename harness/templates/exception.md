@@ -1,7 +1,8 @@
 ---
 gate: name-of-failed-gate
 approver: human-name
-expiresWhen: explicit-condition
+approvedAt: 1970-01-01T00:00:00.000Z
+expiresAt: 1970-01-02T00:00:00.000Z
 ---
 
 # 例外原因

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pull Request Acceptance Evidence",
+  "type": "object",
+  "required": ["url", "status", "recordedAt"],
+  "properties": {
+    "url": { "type": "string", "format": "uri" },
+    "status": { "enum": ["merged", "accepted"] },
+    "acceptedBy": { "type": "string" },
+    "recordedAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

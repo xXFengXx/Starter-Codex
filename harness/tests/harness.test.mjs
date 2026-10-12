@@ -30,10 +30,22 @@ test('invalid Requirement IDs fail closed', () => {
   assert.match(result.stderr, /Requirement ID must match/);
 });
 
-test('PR generator source expands changed files without Git warnings', () => {
+test('PR generator uses the committed branch diff instead of only working-tree status', () => {
   const source = readFileSync(cli, 'utf8');
-  assert.match(source, /--untracked-files=all/);
-  assert.match(source, /execFileSync\('git', \['status'/);
-  assert.match(source, /line\.slice\(3\)/);
+  assert.match(source, /merge-base/);
+  assert.match(source, /diff', '--name-only'/);
+  assert.doesNotMatch(source, /git', \['status'/);
+});
+
+test('completion requires verifiable PR evidence', () => {
+  const source = readFileSync(cli, 'utf8');
+  assert.match(source, /pr-evidence\.json is required before completion/);
+  assert.match(source, /validatePrEvidence/);
+});
+
+test('sensitive-data audit includes untracked file contents', () => {
+  const source = readFileSync(cli, 'utf8');
+  assert.match(source, /ls-files', '--others', '--exclude-standard/);
+  assert.match(source, /read\(join\(ROOT, pathName\)\)/);
 });
 

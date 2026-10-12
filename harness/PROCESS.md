@@ -44,6 +44,12 @@ intake -> clarified -> planned -> approved -> implementing -> verifying -> revie
 
 有效例外必须记录影响、补偿验证、批准人和到期条件，并始终出现在 PR Package 中。
 
+自 `harness/policy.json` 的 `strongEvidenceRequiredAfter` 起，进入 `approved` 还必须生成 `approval.json`：审批者必须位于授权名单中，证据必须记录可信来源、批准时间以及当前 `contract.md` 与 `plan.md` 的内容哈希。批准后修改合同或计划会使快照失效。生效时间之前已经完成的历史需求不伪造补录证据。
+
+验证必须在 `.harness/runtime/` 中先检查默认分支的干净隔离基线，再执行当前需求的类型检查、测试、构建、范围检查、敏感信息检查、依赖审计和例外记录校验。依赖审计可以保留已记录的基线缺口，但不得扩大任一严重级别的漏洞数量。
+
+PR Package 的变更路径来自配置基线到需求 HEAD 的 Git diff，并包含当前工作树新增内容；工作树是否干净不影响已提交变更的呈现。进入 `completed` 必须提供 `pr-evidence.json`，证明 PR 已合并或被授权审批者明确接受。
+
 ## 风险等级
 
 - `low`：局部、可逆的行为或文档变更；
@@ -58,6 +64,7 @@ intake -> clarified -> planned -> approved -> implementing -> verifying -> revie
 npm run harness:doctor
 npm run requirement:validate -- REQ-0001
 npm run requirement:status -- REQ-0001
+npm run harness:approval -- REQ-0001 <authorized-approver> local-confirmation
 npm run requirement:transition -- REQ-0001 implementing maintainer "Approved implementation begins"
 npm run harness:reset
 npm run harness:verify -- REQ-0001
