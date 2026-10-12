@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-`review-ready`
+`completed`
 
 ## 已完成
 
@@ -13,6 +13,7 @@
 - REQ-0001 与 REQ-0002 的契约校验和 Harness 单元测试通过。
 - 完整类型检查、测试和生产构建通过。
 - 已生成中文 PR Package，并进入 `review-ready`。
+- PR #2 已合并至 `origin/main`，需求已按维护者确认转换为 `completed`。
 
 ## 决策
 
@@ -25,5 +26,5 @@
 
 ## 下一步
 
-审阅中文文档与 PR Package；批准后提交并推送 REQ-0002 分支。
+无需后续交付动作。
 
