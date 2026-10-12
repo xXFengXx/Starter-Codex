@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0004",
-  "state": "review-ready",
+  "state": "completed",
   "risk": "low",
-  "updatedAt": "2026-10-12T03:42:23.056Z",
+  "updatedAt": "2026-10-12T03:46:55.499Z",
   "history": [
     {
       "from": null,
@@ -73,6 +73,13 @@
       "actor": "Codex",
       "at": "2026-10-12T03:42:23.056Z",
       "note": "PR 发布前完整门禁在授权环境中重新通过"
+    },
+    {
+      "from": "review-ready",
+      "to": "completed",
+      "actor": "需求提出人",
+      "at": "2026-10-12T03:46:55.499Z",
+      "note": "维护者确认 PR #6 review 通过并明确接受 REQ-0004"
     }
   ]
 }
