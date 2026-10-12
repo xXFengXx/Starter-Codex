@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0001",
-  "state": "review-ready",
+  "state": "completed",
   "risk": "medium",
-  "updatedAt": "2026-10-10T05:12:41.682Z",
+  "updatedAt": "2026-10-12T03:15:16.336Z",
   "history": [
     {
       "from": null,
@@ -115,6 +115,13 @@
       "actor": "Codex",
       "at": "2026-10-10T05:12:41.682Z",
       "note": "Design interview document verified and included in refreshed PR Package."
+    },
+    {
+      "from": "review-ready",
+      "to": "completed",
+      "actor": "xXFengXx",
+      "at": "2026-10-12T03:15:16.336Z",
+      "note": "PR #1 已合并至 origin/main，维护者确认收尾状态"
     }
   ]
 }
