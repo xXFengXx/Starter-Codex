@@ -7,6 +7,8 @@ import { logger } from './logger';
 
 const SERVICE = 'document-service';
 const DOCUMENTS_META = 'documents-meta.json';
+export const MAX_IMPORT_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+export const SUPPORTED_IMPORT_EXTENSIONS = new Set(['.txt', '.md']);
 
 export class DocumentService {
   private persistence: PersistenceService;
@@ -30,11 +32,32 @@ export class DocumentService {
     }
 
     const filename = path.basename(filePath);
-    const content = fs.readFileSync(filePath, 'utf-8');
     const stats = fs.statSync(filePath);
+    const extension = path.extname(filename).toLowerCase();
+
+    if (!stats.isFile()) {
+      throw new Error('The selected path is not a file.');
+    }
+    if (!SUPPORTED_IMPORT_EXTENSIONS.has(extension)) {
+      throw new Error('Unsupported file type. Only .txt and .md files can be imported.');
+    }
+    if (stats.size > MAX_IMPORT_FILE_SIZE_BYTES) {
+      throw new Error('File exceeds the 10 MB size limit.');
+    }
+
+    let content: string;
+    try {
+      content = fs.readFileSync(filePath, 'utf-8');
+    } catch (error) {
+      logger.error(SERVICE, 'Unable to read import file', { filePath, error: String(error) });
+      throw new Error('The selected file could not be read.');
+    }
+
+    const documentId = uuidv4();
+    const contentPath = `content/${documentId}.txt`;
 
     const doc: Document = {
-      id: uuidv4(),
+      id: documentId,
       title: filename.replace(/\.[^.]+$/, ''),
       filename,
       importedAt: new Date().toISOString(),
@@ -42,16 +65,24 @@ export class DocumentService {
       status: 'imported',
     };
 
-    // Copy file to data directory
-    this.persistence.copyFileToDocuments(filePath, filename);
-
-    // Store content for indexing
-    this.persistence.writeText(`content/${doc.id}.txt`, content);
-
-    // Update metadata
-    const docs = this.listDocuments();
-    docs.push(doc);
-    this.persistence.writeJson(DOCUMENTS_META, docs);
+    let sourceCopied = false;
+    try {
+      // Write metadata last so failed imports never appear in the document list.
+      this.persistence.copyFileToDocuments(filePath, filename);
+      sourceCopied = true;
+      this.persistence.writeText(contentPath, content);
+      const docs = this.listDocuments();
+      docs.push(doc);
+      this.persistence.writeJson(DOCUMENTS_META, docs);
+    } catch (error) {
+      if (sourceCopied) this.persistence.deleteFromDocuments(filename);
+      this.persistence.deleteFile(contentPath);
+      logger.error(SERVICE, 'Document import failed and was rolled back', {
+        filename,
+        error: String(error),
+      });
+      throw new Error(`Unable to import ${filename}. No data was saved.`);
+    }
 
     logger.info(SERVICE, 'Document imported', {
       documentId: doc.id,

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import * as path from 'path';
 import { registerIpcHandlers } from './ipc-handlers';
 import { DocumentService } from '../services/document-service';
@@ -50,6 +50,7 @@ function initializeServices() {
     indexingService,
     qaService,
     persistence,
+    dialog,
   });
 
   logger.info('main', 'Services initialized', { dataDir });

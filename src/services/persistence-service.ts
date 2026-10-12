@@ -34,8 +34,14 @@ export class PersistenceService {
   writeJson<T>(relativePath: string, data: T): void {
     const fullPath = path.join(this.dataDir, relativePath);
     const dir = path.dirname(fullPath);
+    const temporaryPath = `${fullPath}.${process.pid}.${Date.now()}.tmp`;
     fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(fullPath, JSON.stringify(data, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(temporaryPath, JSON.stringify(data, null, 2), 'utf-8');
+      fs.renameSync(temporaryPath, fullPath);
+    } finally {
+      if (fs.existsSync(temporaryPath)) fs.unlinkSync(temporaryPath);
+    }
   }
 
   /** Read a text file. */
@@ -57,7 +63,7 @@ export class PersistenceService {
   copyFileToDocuments(sourcePath: string, filename: string): string {
     const destPath = path.join(this.documentsDir, filename);
     fs.mkdirSync(this.documentsDir, { recursive: true });
-    fs.copyFileSync(sourcePath, destPath);
+    fs.copyFileSync(sourcePath, destPath, fs.constants.COPYFILE_EXCL);
     return destPath;
   }
 
@@ -67,6 +73,12 @@ export class PersistenceService {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
+  }
+
+  /** Delete a stored file by its data-directory-relative path. */
+  deleteFile(relativePath: string): void {
+    const filePath = path.join(this.dataDir, relativePath);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   }
 
   /** List all files in a directory. */

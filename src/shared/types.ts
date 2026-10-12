@@ -57,6 +57,7 @@ export interface AppStatus {
 export const IPC_CHANNELS = {
   // Document operations
   LIST_DOCUMENTS: 'documents:list',
+  SELECT_DOCUMENT: 'documents:select',
   IMPORT_DOCUMENT: 'documents:import',
   GET_DOCUMENT: 'documents:get',
   DELETE_DOCUMENT: 'documents:delete',

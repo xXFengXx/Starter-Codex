@@ -13,6 +13,7 @@ try {
 
 console.log('[dev] Building renderer...');
 try {
+  execSync('npx vite build --config vite.preload.config.ts', { cwd: root, stdio: 'inherit' });
   execSync('npx vite build', { cwd: root, stdio: 'inherit' });
 } catch {
   console.error('[dev] Vite build failed');

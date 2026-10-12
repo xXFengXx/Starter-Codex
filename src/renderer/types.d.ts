@@ -6,6 +6,7 @@ declare global {
     knowledgeBase: {
       documents: {
         list: () => Promise<import('../shared/types').Document[]>;
+        selectFile: () => Promise<string | null>;
         import: (filePath: string) => Promise<import('../shared/types').Document>;
         get: (id: string) => Promise<import('../shared/types').Document | null>;
         delete: (id: string) => Promise<boolean>;
