@@ -1,0 +1,106 @@
+{
+  "requirementId": "REQ-0003",
+  "state": "completed",
+  "risk": "medium",
+  "updatedAt": "2026-10-10T14:04:46.092Z",
+  "history": [
+    {
+      "from": null,
+      "to": "intake",
+      "actor": "Codex",
+      "at": "2026-10-10T10:19:00.883Z",
+      "note": "收到修复导入功能并限制文件类型与大小的需求。"
+    },
+    {
+      "from": "intake",
+      "to": "clarified",
+      "actor": "Codex",
+      "at": "2026-10-10T10:40:04.438Z",
+      "note": "需求文档已通过，范围与验收标准已确认"
+    },
+    {
+      "from": "clarified",
+      "to": "planned",
+      "actor": "Codex",
+      "at": "2026-10-10T10:40:05.581Z",
+      "note": "实施计划与验收追踪已完成"
+    },
+    {
+      "from": "planned",
+      "to": "approved",
+      "actor": "需求提出人",
+      "at": "2026-10-10T10:40:06.398Z",
+      "note": "用户明确批准需求并要求开始实施"
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-10T10:40:35.317Z",
+      "note": "在独立需求分支开始实施"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-10T10:43:26.770Z",
+      "note": "实现与追踪信息已更新，开始执行完整门禁"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-10T10:45:57.651Z",
+      "note": "全部强制门禁通过，验收追踪与审计记录已更新"
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-10T10:46:29.112Z",
+      "note": "本地审阅要求补强直接 IPC 绕过界面过滤的测试证据"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-10T10:47:13.086Z",
+      "note": "审阅反馈已解决，直接 IPC 绕过测试已补充"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-10T10:48:17.640Z",
+      "note": "审阅反馈已解决且完整门禁重新通过"
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-10T12:33:32.992Z",
+      "note": "用户运行反馈确认 preload 在 Electron sandbox 下未加载，退回实施修复"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-10T12:35:08.559Z",
+      "note": "preload 单文件打包与 Electron 回归测试已完成"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-10T12:37:20.946Z",
+      "note": "用户反馈缺陷已修复，sandbox preload 回归测试及完整门禁通过"
+    },
+    {
+      "from": "review-ready",
+      "to": "completed",
+      "actor": "需求提出人",
+      "at": "2026-10-10T14:04:46.092Z",
+      "note": "维护者确认 REQ-0003 review 完成并明确接受"
+    }
+  ]
+}

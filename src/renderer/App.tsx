@@ -16,6 +16,7 @@ export function App() {
   });
   const [lastResponse, setLastResponse] = useState<QAResponse | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
 
   const refreshDocuments = useCallback(async () => {
     try {
@@ -33,8 +34,17 @@ export function App() {
   }, [refreshDocuments]);
 
   const handleImport = useCallback(async () => {
-    console.log('Import triggered - use window.knowledgeBase.documents.import(filePath)');
-  }, []);
+    setImportError(null);
+    try {
+      const filePath = await window.knowledgeBase.documents.selectFile();
+      if (!filePath) return;
+      const importedDocument = await window.knowledgeBase.documents.import(filePath);
+      await refreshDocuments();
+      setSelectedDoc(importedDocument);
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'The document could not be imported.');
+    }
+  }, [refreshDocuments]);
 
   const handleSelectDocument = useCallback((doc: Document) => {
     setSelectedDoc(doc);
@@ -134,6 +144,11 @@ export function App() {
             onSelect={handleSelectDocument}
             selectedId={selectedDoc?.id ?? null}
           />
+          {importError && (
+            <div role="alert" style={{ padding: '10px 16px', color: '#ff9b9b', fontSize: '12px' }}>
+              {importError}
+            </div>
+          )}
         </div>
 
         {/* Right panel: Document detail + Q&A + History */}

@@ -1,4 +1,4 @@
-import { IpcMain } from 'electron';
+import type { IpcMain } from 'electron';
 import { DocumentService } from '../services/document-service';
 import { IndexingService } from '../services/indexing-service';
 import { QaService } from '../services/qa-service';
@@ -13,15 +13,31 @@ export interface Services {
   indexingService: IndexingService;
   qaService: QaService;
   persistence: PersistenceService;
+  dialog: DocumentDialog;
+}
+
+export interface DocumentDialog {
+  showOpenDialog(options: {
+    properties: Array<'openFile'>;
+    filters: Array<{ name: string; extensions: string[] }>;
+  }): Promise<{ canceled: boolean; filePaths: string[] }>;
 }
 
 export function registerIpcHandlers(ipcMain: IpcMain, services: Services) {
-  const { documentService, indexingService, qaService, persistence } = services;
+  const { documentService, indexingService, qaService, persistence, dialog } = services;
 
   // Document operations
   ipcMain.handle(IPC_CHANNELS.LIST_DOCUMENTS, async () => {
     logger.debug(SERVICE, 'IPC: LIST_DOCUMENTS');
     return documentService.listDocuments();
+  });
+
+  ipcMain.handle(IPC_CHANNELS.SELECT_DOCUMENT, async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'Text and Markdown', extensions: ['txt', 'md'] }],
+    });
+    return result.canceled ? null : (result.filePaths[0] ?? null);
   });
 
   ipcMain.handle(IPC_CHANNELS.IMPORT_DOCUMENT, async (_event, filePath: string) => {

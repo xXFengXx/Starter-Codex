@@ -4,6 +4,7 @@ import { IPC_CHANNELS } from '../shared/types';
 const api = {
   documents: {
     list: () => ipcRenderer.invoke(IPC_CHANNELS.LIST_DOCUMENTS),
+    selectFile: () => ipcRenderer.invoke(IPC_CHANNELS.SELECT_DOCUMENT),
     import: (filePath: string) => ipcRenderer.invoke(IPC_CHANNELS.IMPORT_DOCUMENT, filePath),
     get: (id: string) => ipcRenderer.invoke(IPC_CHANNELS.GET_DOCUMENT, id),
     delete: (id: string) => ipcRenderer.invoke(IPC_CHANNELS.DELETE_DOCUMENT, id),
