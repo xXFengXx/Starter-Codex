@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-`review-ready`
+`completed`
 
 ## 已完成
 
@@ -14,6 +14,7 @@
 - 删除未使用的 Vitest，将依赖审计从 13 项（含 2 项 critical）降至 7 项（5 项 moderate、2 项 high）；
 - 生成标准 PR Package，并通过状态机进入 `review-ready`；
 - 将 Q1–Q29 设计问题与决定汇总到 `design-interview.md`。
+- PR #1 已合并至 `origin/main`，需求已按维护者确认转换为 `completed`。
 
 ## 决策
 
@@ -27,5 +28,5 @@
 
 ## 下一步
 
-审阅最终差异和 PR Package，在获准后提交并发布需求分支。
+无需后续交付动作；依赖升级继续作为独立需求处理。
 
