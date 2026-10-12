@@ -28,8 +28,9 @@
 - `npm ci` 报告当前锁文件存在 7 个依赖漏洞（5 个 moderate、2 个 high）；尚未审阅详情，也未执行破坏性 `npm audit fix --force`。
 - Electron 与 esbuild 安装脚本在 `npm ci` 时被当前 npm 安全策略阻止，但当前工作树的 `check`、测试和构建已通过；隔离基线仍需由完整 Harness 验证确认。
 - 当前环境的 GitHub CLI 未登录，尚未创建远程 Source Issue；`contract.md` 暂以设计访谈作为来源，后续需替换为真实 Issue URL。
+- `git push -u origin requirement/REQ-0005-harness-hardening` 被安全策略拒绝：尚缺用户对向 `xXFengXx/Starter-Codex` 推送本分支的明确授权。未尝试绕过。
 
 ## 下一步
 
-提交实现并推送需求分支；在 GitHub 创建 Delivery PR 后记录其 URL，等待维护者审阅。PR 合并或明确接受前不得转换到 `completed`。
+取得用户对向 `xXFengXx/Starter-Codex` 推送的明确授权后，推送 `requirement/REQ-0005-harness-hardening`；连接 GitHub 身份并创建 Delivery PR，记录其 URL后等待维护者审阅。PR 合并或明确接受前不得转换到 `completed`。
 
