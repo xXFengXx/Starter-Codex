@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0002",
-  "state": "review-ready",
+  "state": "completed",
   "risk": "low",
-  "updatedAt": "2026-10-10T05:31:13.986Z",
+  "updatedAt": "2026-10-12T03:15:16.342Z",
   "history": [
     {
       "from": null,
@@ -52,6 +52,13 @@
       "actor": "Codex",
       "at": "2026-10-10T05:31:13.986Z",
       "note": "中文文档、验证证据和中文 PR Package 均已完成。"
+    },
+    {
+      "from": "review-ready",
+      "to": "completed",
+      "actor": "xXFengXx",
+      "at": "2026-10-12T03:15:16.342Z",
+      "note": "PR #2 已合并至 origin/main，维护者确认收尾状态"
     }
   ]
 }
