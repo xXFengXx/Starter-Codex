@@ -1,0 +1,85 @@
+{
+  "requirementId": "REQ-0004",
+  "state": "completed",
+  "risk": "low",
+  "updatedAt": "2026-10-12T03:46:55.499Z",
+  "history": [
+    {
+      "from": null,
+      "to": "intake",
+      "actor": "Codex",
+      "at": "2026-10-10T14:05:00.000Z",
+      "note": "收到为 Harness 编写含时序图 README 的需求"
+    },
+    {
+      "from": "intake",
+      "to": "clarified",
+      "actor": "Codex",
+      "at": "2026-10-10T14:07:51.541Z",
+      "note": "合同完整且 6 条验收标准无歧义"
+    },
+    {
+      "from": "clarified",
+      "to": "planned",
+      "actor": "Codex",
+      "at": "2026-10-10T14:07:52.046Z",
+      "note": "实施计划与追踪矩阵已完成"
+    },
+    {
+      "from": "planned",
+      "to": "approved",
+      "actor": "需求提出人",
+      "at": "2026-10-10T14:07:52.509Z",
+      "note": "用户明确要求生成 Harness README，批准已规范化的文档范围"
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-10T14:07:53.292Z",
+      "note": "在独立需求分支开始文档实施"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-10T14:10:00.523Z",
+      "note": "README 实现、静态核查与追踪更新完成"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-10T14:12:54.076Z",
+      "note": "完整门禁通过，PR Package 已生成并审阅"
+    },
+    {
+      "from": "review-ready",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-12T03:41:24.202Z",
+      "note": "创建 PR 前按维护者要求重新执行完整 Harness 门禁"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Codex",
+      "at": "2026-10-12T03:41:25.105Z",
+      "note": "PR 发布前复核已完成，开始重新验证"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Codex",
+      "at": "2026-10-12T03:42:23.056Z",
+      "note": "PR 发布前完整门禁在授权环境中重新通过"
+    },
+    {
+      "from": "review-ready",
+      "to": "completed",
+      "actor": "需求提出人",
+      "at": "2026-10-12T03:46:55.499Z",
+      "note": "维护者确认 PR #6 review 通过并明确接受 REQ-0004"
+    }
+  ]
+}
