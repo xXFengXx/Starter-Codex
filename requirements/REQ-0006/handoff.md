@@ -2,53 +2,41 @@
 
 ## 当前状态
 
-`planned`（计划完成，等待人工批准）。
+`blocked`（从 `approved` 转入）。本次实施会话被环境权限问题阻塞；进入 `implementing` 所需的 Harness Git 检查无法运行。
 
 ## 风险等级
 
-`low`。拟议产品变更仅为新增根目录 `README.md`，不改变代码、依赖或运行行为，可通过删除该文件回退。
-
-## 验收标准
-
-- AC-001：README 说明 Electron/React/TypeScript 个人知识库的定位与当前能力。
-- AC-002：说明 Node.js 22 要求与 `npm ci` 安装步骤。
-- AC-003：说明 `npm run dev` 复现步骤及其构建、启动行为。
-- AC-004：列出 `check`、`test`、`build` 三项质量命令。
-- AC-005：导航 `src/`、示例数据、文档、Harness 与需求目录。
-- AC-006：如实披露导入 UI 未接线、尚无产品自动化测试等基线限制。
+`low`。批准范围仍仅允许新增根目录 `README.md`，不改变代码、依赖或运行行为。
 
 ## 已完成
 
-- 已完整阅读 `AGENTS.md` 和 `harness/PROCESS.md`。
-- 已根据 Issue #9 和仓库现状规范化 Requirement Contract。
-- 已创建逐条覆盖 AC-001 至 AC-006 的实施计划与追踪矩阵。
-- 已将风险从模板默认值调整为 `low`，与纯文档、可逆变更相符。
-- `npm run harness:doctor` 已通过（Node v22.23.2、Git 和 Harness 文件可用）。
-- `npm run requirement:validate -- REQ-0006` 已通过，识别到 6 条验收标准。
-- 已使用 actor `Codex` 按顺序完成 `intake → clarified → planned` 状态转换。
-
-## 计划摘要
-
-批准后仅新增根目录 `README.md`，依次覆盖项目简介、当前能力与限制、Node.js 22 环境、依赖安装、开发启动、质量检查和主要目录导航。所有命令和陈述分别以 `.nvmrc`、`package.json`、`scripts/dev.js` 与 `feature_list.json` 为依据。实施后逐条验证六项验收标准，并运行完整 Harness 通用门禁。
+- 完整阅读了 `AGENTS.md` 与 `harness/PROCESS.md`。
+- 阅读并确认 `contract.md`、`plan.md`、`traceability.md`、`state.json` 的批准内容；状态历史包含维护者 `xXFengXx` 的人工批准。
+- 确认本次实现范围只包括根目录 `README.md` 及需求档案更新。
+- 未修改产品文件，也未执行任何显式 Git 或 `gh` 命令。
 
 ## 决策
 
-- README 以简体中文为主，以匹配原始需求；命令和技术名称保留原文。
-- “如何复现”被规范化为从干净检出开始执行 `npm ci`、`npm run dev`，并提供基础质量检查命令。
-- 不把 `feature_list.json` 中标为 partial 或 missing 的能力包装为完整功能。
-- 不在本次文档需求中新增许可证、发布下载、部署、截图或功能实现。
+- `npm ci` 是 AGENTS.md 规定的启动步骤。该命令失败后，依据“门禁失败时必须停止推进”，没有继续实施 README。
+- 不绕过 Harness 直接编辑 `state.json`；状态转换必须使用 `npm run requirement:transition`。
 
 ## 当前失败
 
-- 首次与第二次读取文件时，默认 PowerShell 7 进程均因 `CreateProcessAsUserW` 错误无法启动；随后改用系统 `cmd.exe` 成功完成只读检查。该环境问题未影响需求档案。
+- `npm ci`：失败，退出码 `-4048`；npm 在依赖生命周期脚本阶段报告 `spawn EPERM`。npm 日志也因用户级缓存目录权限而未写入。
+- `npm run requirement:transition -- REQ-0006 implementing Codex "Implementation session started after maintainer approval"`：失败，退出码 `1`；Harness 报告 `FAIL spawnSync git EPERM`。
+- `npm run requirement:transition -- REQ-0006 blocked Codex "Blocked: npm ci and Harness git subprocesses fail with EPERM in this environment"`：成功，需求状态已转为 `blocked`。
+- 默认 PowerShell 7 进程两次因 `CreateProcessAsUserW` 错误无法启动；改用 `cmd.exe` 后只读文件操作可用。
 
-## 维护者注意事项
+## 未实施
 
-- 请在 Issue #9 对本计划进行审阅；若接受，按流程评论 `/approve REQ-0006` 并以维护者 GitHub 登录名推进到 `approved`。计划若在批准后变化，需要重新批准。
-- 实施范围应保持为根目录 `README.md`；不要借本需求修复 `feature_list.json` 中列出的功能缺口。
-- 依赖审计只需审阅并记录结果；任何依赖升级应另立相应风险等级的需求，不要静默修复。
-- 本计划没有需要阻塞的未决问题。
+- 根目录 `README.md` 尚未创建。
+- `traceability.md` 尚未填写实现位置或验证结果，因为没有实现发生。
+- `harness:doctor`、`requirement:validate`、`check`、`test`、`build` 均未在本会话成功运行。
 
-## 下一步
+## 精确下一步
 
-等待维护者人工批准；本会话不得推进到 `approved` 或修改产品代码。
+1. 在允许 Node/npm 子进程调用 Git 且可执行依赖生命周期脚本的环境中重新进入本 worktree。
+2. 运行 `npm ci`，并确认成功。
+3. 运行 `npm run harness:doctor` 与 `npm run requirement:validate -- REQ-0006`。
+4. 使用规定命令将 REQ-0006 从 `approved` 转为 `implementing`（actor 为 `Codex`）。
+5. 按已批准计划新增根目录 `README.md`，更新 `traceability.md` 与本交接文件；只进行实施阶段自查，不转到 `verifying`。

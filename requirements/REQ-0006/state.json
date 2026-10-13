@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0006",
-  "state": "approved",
+  "state": "blocked",
   "risk": "low",
-  "updatedAt": "2026-10-13T12:41:33.329Z",
+  "updatedAt": "2026-10-13T12:45:24.243Z",
   "history": [
     {
       "from": null,
@@ -31,6 +31,14 @@
       "actor": "xXFengXx",
       "at": "2026-10-13T12:41:33.329Z",
       "note": "/approve on https://github.com/xXFengXx/Starter-Codex/issues/9"
+    },
+    {
+      "from": "approved",
+      "to": "blocked",
+      "actor": "Codex",
+      "at": "2026-10-13T12:45:24.243Z",
+      "note": "\"Blocked: npm ci and Harness git subprocesses fail with EPERM in this environment\""
     }
-  ]
+  ],
+  "blockedFrom": "approved"
 }
