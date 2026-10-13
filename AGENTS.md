@@ -26,10 +26,10 @@ npm run requirement:validate -- <Requirement ID>
 
 ## 强制工作流
 
-1. 接收：将原始请求规范化为 `contract.md`。
+1. 接收：用 `npm run requirement:new -- <Requirement ID> <source>` 建档，再将原始请求规范化为 `contract.md`。
 2. 澄清：解决全部歧义；使用 `AC-001`、`AC-002` 等编号标识验收标准。
 3. 计划：创建 `plan.md`，并在 `traceability.md` 中映射每条验收标准。
-4. 批准：修改产品代码前取得人工批准。
+4. 批准：修改产品代码前取得人工批准。`approved` 与 `completed` 只能以人的身份推进，`Codex` 与 `harness-agent` 会被拒绝；经 GitHub Issue 进入的需求按 `harness/PROCESS.md` 的「批准者」一节批准。
 5. 实施：修改保持在批准范围内，并持续更新交接记录。
 6. 验证：在干净、隔离的测试状态下运行 `npm run harness:verify -- <Requirement ID>`。
 7. 审阅：运行 `npm run harness:pr -- <Requirement ID>`，检查生成的 PR Package。

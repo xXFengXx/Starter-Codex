@@ -15,6 +15,7 @@
     "harness:pr": "node harness/scripts/harness.mjs pr",
     "harness:benchmark": "node harness/scripts/harness.mjs benchmark",
     "harness:ci": "node harness/scripts/harness.mjs ci",
+    "requirement:new": "node harness/scripts/harness.mjs new",
     "requirement:validate": "node harness/scripts/harness.mjs validate",
     "requirement:status": "node harness/scripts/harness.mjs status",
     "requirement:transition": "node harness/scripts/harness.mjs transition"

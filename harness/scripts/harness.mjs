@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { performance } from 'node:perf_hooks';
@@ -7,6 +7,9 @@ import { performance } from 'node:perf_hooks';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const REQUIREMENTS = join(ROOT, 'requirements');
 const RUNTIME = join(ROOT, '.harness', 'runtime');
+const TEMPLATE = join(ROOT, 'harness', 'templates', 'requirement');
+const RESERVED_ACTORS = ['codex', 'harness-agent'];
+const HUMAN_ONLY_TARGETS = ['approved', 'completed'];
 const states = ['intake', 'clarified', 'planned', 'approved', 'implementing', 'verifying', 'review-ready', 'completed', 'blocked', 'cancelled'];
 const forward = {
   intake: 'clarified', clarified: 'planned', planned: 'approved', approved: 'implementing',
@@ -91,6 +94,9 @@ function transition(id, next, actor, note = '') {
   if (state.state === 'blocked' && next === state.blockedFrom) allowed = true;
   if (state.state === 'review-ready' && next === 'implementing') allowed = true;
   if (!allowed) fail(`Invalid transition: ${state.state} -> ${next}`);
+  if (HUMAN_ONLY_TARGETS.includes(next) && RESERVED_ACTORS.includes(actor.toLowerCase())) {
+    fail(`Actor '${actor}' is reserved for automation and cannot move a requirement to ${next}.`);
+  }
   if (['clarified', 'planned', 'approved', 'implementing', 'verifying', 'review-ready', 'completed'].includes(next)) validate(id, { quiet: true });
   if (next === 'implementing') {
     const branch = execFileSync('git', ['branch', '--show-current'], { cwd: ROOT, encoding: 'utf8' }).trim();
@@ -107,6 +113,25 @@ function transition(id, next, actor, note = '') {
   state.history.push({ from: previous, to: next, actor, at: now, ...(note ? { note } : {}) });
   writeFileSync(join(dir, 'state.json'), `${JSON.stringify(state, null, 2)}\n`);
   console.log(`PASS ${id}: ${previous} -> ${next}`);
+}
+
+function newRequirement(id, source, actor) {
+  if (!/^REQ-\d{4,}$/.test(id ?? '')) fail('Requirement ID must match REQ-0001.');
+  const singleLineSource = (source ?? '').split(/\s+/).filter(Boolean).join(' ');
+  if (!singleLineSource) fail('new requires a source link or path.');
+  const dir = join(REQUIREMENTS, id);
+  if (existsSync(dir)) fail(`Requirement directory already exists: requirements/${id}`);
+  mkdirSync(REQUIREMENTS, { recursive: true });
+  cpSync(TEMPLATE, dir, { recursive: true });
+  for (const name of readdirSync(dir)) writeFileSync(join(dir, name), read(join(dir, name)).replaceAll('REQ-0000', id));
+  const contractPath = join(dir, 'contract.md');
+  writeFileSync(contractPath, read(contractPath).replace(/^source: .*$/m, () => `source: ${singleLineSource}`));
+  const state = JSON.parse(read(join(dir, 'state.json')));
+  const now = new Date().toISOString();
+  Object.assign(state, { requirementId: id, state: 'intake', updatedAt: now });
+  state.history = [{ from: null, to: 'intake', actor: actor || 'maintainer', at: now, note: `Harness Run created from ${singleLineSource}` }];
+  writeFileSync(join(dir, 'state.json'), `${JSON.stringify(state, null, 2)}\n`);
+  console.log(`PASS ${id}: requirement created in intake.`);
 }
 
 function runGate(label, command, args) {
@@ -196,6 +221,7 @@ function ci() {
 const [command, id, target, ...rest] = process.argv.slice(2);
 try {
   if (command === 'doctor') doctor();
+  else if (command === 'new') newRequirement(id, target, rest[0]);
   else if (command === 'validate') validate(id);
   else if (command === 'status') console.log(JSON.stringify(readState(id), null, 2));
   else if (command === 'transition') {
@@ -205,7 +231,7 @@ try {
   else if (command === 'pr') generatePr(id);
   else if (command === 'benchmark') benchmark();
   else if (command === 'ci') ci();
-  else fail('Usage: harness.mjs <doctor|validate|status|transition|reset|verify|pr|benchmark|ci>');
+  else fail('Usage: harness.mjs <doctor|new|validate|status|transition|reset|verify|pr|benchmark|ci>');
 } catch (error) {
   console.error(`FAIL ${error.message}`);
   process.exitCode = 1;

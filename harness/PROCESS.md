@@ -44,6 +44,17 @@ intake -> clarified -> planned -> approved -> implementing -> verifying -> revie
 
 有效例外必须记录影响、补偿验证、批准人和到期条件，并始终出现在 PR Package 中。
 
+## 批准者
+
+`approved` 和 `completed` 只能由人推进。`Codex` 与 `harness-agent` 是保留的自动化身份（不区分大小写），`requirement:transition` 拒绝它们推进到这两个状态。
+
+需求经 GitHub Issue 进入时：
+
+- `contract.md` 的 `source` 是该 Issue 的完整 URL；
+- 批准来自对仓库有写权限的维护者在该 Issue 下的 `/approve <Requirement ID>` 评论，`approved` 的 actor 是该维护者的 GitHub 登录名；
+- 批准只对评论之前最后一次推送的计划有效，计划再变更须重新批准；
+- Draft PR 合并或被明确接受后，由维护者推进到 `completed`。
+
 ## 风险等级
 
 - `low`：局部、可逆的行为或文档变更；
@@ -56,6 +67,7 @@ intake -> clarified -> planned -> approved -> implementing -> verifying -> revie
 
 ```powershell
 npm run harness:doctor
+npm run requirement:new -- REQ-0001 <source> [actor]
 npm run requirement:validate -- REQ-0001
 npm run requirement:status -- REQ-0001
 npm run requirement:transition -- REQ-0001 implementing maintainer "Approved implementation begins"
@@ -67,5 +79,5 @@ npm run harness:benchmark
 
 ## 新增需求
 
-将 `harness/templates/requirement/` 复制到 `requirements/<Requirement ID>/`，替换全部占位内容后执行校验。合并后保留该目录，作为长期决策与证据链。
+使用 `npm run requirement:new -- <Requirement ID> <source> [actor]` 建档：它把 `harness/templates/requirement/` 复制到 `requirements/<Requirement ID>/`，填入 ID 与来源，状态为 `intake`。随后替换其余占位内容并执行校验。合并后保留该目录，作为长期决策与证据链。
 
