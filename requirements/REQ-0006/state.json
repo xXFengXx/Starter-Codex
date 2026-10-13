@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0006",
-  "state": "blocked",
+  "state": "approved",
   "risk": "low",
-  "updatedAt": "2026-10-13T12:45:24.243Z",
+  "updatedAt": "2026-10-13T13:01:02.683Z",
   "history": [
     {
       "from": null,
@@ -38,7 +38,13 @@
       "actor": "Codex",
       "at": "2026-10-13T12:45:24.243Z",
       "note": "\"Blocked: npm ci and Harness git subprocesses fail with EPERM in this environment\""
+    },
+    {
+      "from": "blocked",
+      "to": "approved",
+      "actor": "xXFengXx",
+      "at": "2026-10-13T13:01:02.683Z",
+      "note": "/retry"
     }
-  ],
-  "blockedFrom": "approved"
+  ]
 }
