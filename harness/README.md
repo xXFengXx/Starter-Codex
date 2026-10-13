@@ -85,7 +85,8 @@ sequenceDiagram
 | [`package.json`](../package.json) | 暴露稳定的 `npm run` 命令，将参数转发给 Harness。 | 人、Agent 和 CI 调用；最终进入 `harness.mjs`。 |
 | [`harness/scripts/harness.mjs`](./scripts/harness.mjs) | Harness 的可执行核心：校验需求、约束转换、重置运行时、执行门禁、生成验证证据和 PR Package。 | 读取需求文件和 Git 状态；写入 `state.json`、`verification.md`、`PR-PACKAGE.md` 与隔离运行时。 |
 | [`harness/schemas/state.schema.json`](./schemas/state.schema.json) | 描述 `state.json` 的机器可读结构，供编辑器或外围工具使用。 | 当前核心脚本自行执行必要状态校验；schema 是外部集成的结构契约。 |
-| [`harness/templates/requirement/`](./templates/requirement/) | 新需求的合同、计划、状态、追踪、验证、审阅与交接模板。 | 建档时复制到新的 `requirements/<ID>/`，随后替换全部占位内容。 |
+| [`harness/templates/requirement/`](./templates/requirement/) | 新需求的合同、计划、状态、追踪、验证、审阅与交接模板。 | `requirement:new` 复制到新的 `requirements/<ID>/` 并填入 ID 与来源，其余占位内容在澄清阶段替换。 |
+| [`.harness-agent.yaml`](../.harness-agent.yaml) | Harness Agent 接入清单，向它描述本 Harness 的状态、命令、目录与受保护路径。 | Harness Agent 读取；只描述现有规则，不是新的规则来源。 |
 | [`harness/templates/PULL_REQUEST.md`](./templates/PULL_REQUEST.md) | 通用 PR 描述模板。 | 供提交 PR 时参考；自动生成的需求证据位于对应的 `PR-PACKAGE.md`。 |
 | [`harness/templates/exception.md`](./templates/exception.md) | 门禁例外记录模板。 | 仅在门禁失败后获得明确批准时使用，记录影响、补偿验证、批准者和到期条件。 |
 | `requirements/<Requirement ID>/` | 单个需求的权威状态与完整证据链。 | `validate` 读取整套文件；`transition`、`verify` 和 `pr` 分别更新状态、验证证据和 PR Package。 |
@@ -113,6 +114,7 @@ sequenceDiagram
 | npm 命令 | 内部命令 | 作用 |
 | --- | --- | --- |
 | `npm run harness:doctor` | `doctor` | 检查 Node 22+、Git 和必需入口文件。 |
+| `npm run requirement:new -- REQ-0006 <source> [actor]` | `new REQ-0006 <source> [actor]` | 从模板建档，写入来源，状态为 `intake`；actor 缺省为 `maintainer`。ID 非法、目录已存在或缺少来源时失败。 |
 | `npm run requirement:validate -- REQ-0004` | `validate REQ-0004` | 校验目录、合同 frontmatter、状态、AC 和追踪行。 |
 | `npm run requirement:status -- REQ-0004` | `status REQ-0004` | 输出当前 `state.json`。 |
 | `npm run requirement:transition -- REQ-0004 planned Codex "note"` | `transition REQ-0004 planned Codex note` | 校验转换合法性，并将操作者和说明追加到状态历史。 |
@@ -129,7 +131,7 @@ sequenceDiagram
 - `intake`：原始请求已建档。
 - `clarified`：合同完整，AC 已编号且无未解决歧义。
 - `planned`：计划完成，每条 AC 均有追踪行。
-- `approved`：状态历史记录人工批准者；此状态之前不得修改产品代码。
+- `approved`：状态历史记录人工批准者；此状态之前不得修改产品代码。自动化身份 `Codex` 与 `harness-agent` 不能推进到 `approved` 或 `completed`。
 - `implementing`：脚本额外检查当前 Git 分支名包含 Requirement ID。
 - `verifying`：实现与追踪已更新，允许执行完整门禁。
 - `review-ready`：最新 `verification.md` 必须是 PASS。
@@ -146,7 +148,8 @@ sequenceDiagram
 npm ci
 npm run harness:doctor
 
-# 2. 从模板创建 requirements/REQ-XXXX，完善合同、计划和追踪后校验
+# 2. 建档，完善合同、计划和追踪后校验
+npm run requirement:new -- REQ-XXXX "https://github.com/xXFengXx/Starter-Codex/issues/<n>"
 npm run requirement:validate -- REQ-XXXX
 npm run requirement:status -- REQ-XXXX
 
@@ -171,3 +174,7 @@ npm run requirement:transition -- REQ-XXXX completed maintainer "PR accepted"
 ```
 
 如果任一命令失败，应停止向后转换，修复问题或记录经批准的例外。会话在需求未完成时结束，则必须更新该需求的 `handoff.md`。
+
+## 由 GitHub Issue 驱动
+
+Harness Agent 通过 [`.harness-agent.yaml`](../.harness-agent.yaml) 接入，可以按上述顺序代为执行：维护者给 Issue 加 `agent:plan` 后，它调用 `requirement:new` 建档并让 Codex 走到 `planned`；维护者在 Issue 下评论 `/approve REQ-XXXX` 后，它以评论者的 GitHub 登录名执行 `approved`，再实施、验证并提交 Draft PR。批准规则见 [`PROCESS.md`](./PROCESS.md#批准者)。合并与 `completed` 仍由维护者完成。

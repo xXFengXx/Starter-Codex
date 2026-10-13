@@ -1,0 +1,57 @@
+{
+  "requirementId": "REQ-0005",
+  "state": "review-ready",
+  "risk": "high",
+  "updatedAt": "2026-10-13T10:03:00.375Z",
+  "history": [
+    {
+      "from": null,
+      "to": "intake",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:50:00.000Z",
+      "note": "按模板手工建档：接入 Harness Agent"
+    },
+    {
+      "from": "intake",
+      "to": "clarified",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:48:06.192Z",
+      "note": "Contract and acceptance criteria complete"
+    },
+    {
+      "from": "clarified",
+      "to": "planned",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:48:06.896Z",
+      "note": "Plan and traceability ready"
+    },
+    {
+      "from": "planned",
+      "to": "approved",
+      "actor": "xXFengXx",
+      "at": "2026-10-13T09:49:45.705Z",
+      "note": "Plan approved in conversation on 2026-10-13"
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:49:46.428Z",
+      "note": "Approved implementation begins"
+    },
+    {
+      "from": "implementing",
+      "to": "verifying",
+      "actor": "Cursor",
+      "at": "2026-10-13T10:02:06.270Z",
+      "note": "Implementation ready for gates"
+    },
+    {
+      "from": "verifying",
+      "to": "review-ready",
+      "actor": "Cursor",
+      "at": "2026-10-13T10:03:00.375Z",
+      "note": "All mandatory gates passed"
+    }
+  ]
+}

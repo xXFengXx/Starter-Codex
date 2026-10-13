@@ -1,0 +1,44 @@
+# Harness Agent 接入清单。只描述本仓库现有 Harness；规则以 AGENTS.md 与 harness/PROCESS.md 为准。
+# 字段定义：harness-agent contract
+schemaVersion: 1
+
+instructions: [AGENTS.md, harness/PROCESS.md]
+
+setup:
+  - [npm, ci]
+
+requirement:
+  root: requirements
+  idPattern: ^REQ-\d{4,}$
+  idFormat: REQ-{n:4}
+  stateFile: state.json
+  stateField: state
+  historyField: history
+  sourceField: contract.md#source
+  handoffFile: handoff.md
+  verificationFile: verification.md
+  prBodyFile: PR-PACKAGE.md
+
+branch: requirement/{id}-{slug}
+
+lifecycle:
+  intake: intake
+  awaitingApproval: planned
+  approved: approved
+  implementing: implementing
+  verifying: verifying
+  reviewReady: review-ready
+  completed: completed
+  blocked: blocked
+  cancelled: cancelled
+
+commands:
+  create: [npm, run, requirement:new, --, "{id}", "{source}", harness-agent]
+  validate: [npm, run, requirement:validate, --, "{id}"]
+  transition: [npm, run, requirement:transition, --, "{id}", "{state}", "{actor}", "{note}"]
+  verify: [npm, run, harness:verify, --, "{id}"]
+  prBody: [npm, run, harness:pr, --, "{id}"]
+
+paths:
+  planWritable: ["requirements/{id}/**"]
+  protected: [.harness-agent.yaml, AGENTS.md, CLAUDE.md, "harness/**", ".github/**"]
