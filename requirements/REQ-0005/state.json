@@ -1,0 +1,29 @@
+{
+  "requirementId": "REQ-0005",
+  "state": "planned",
+  "risk": "high",
+  "updatedAt": "2026-10-13T09:48:06.896Z",
+  "history": [
+    {
+      "from": null,
+      "to": "intake",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:50:00.000Z",
+      "note": "按模板手工建档：接入 Harness Agent"
+    },
+    {
+      "from": "intake",
+      "to": "clarified",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:48:06.192Z",
+      "note": "Contract and acceptance criteria complete"
+    },
+    {
+      "from": "clarified",
+      "to": "planned",
+      "actor": "Cursor",
+      "at": "2026-10-13T09:48:06.896Z",
+      "note": "Plan and traceability ready"
+    }
+  ]
+}
