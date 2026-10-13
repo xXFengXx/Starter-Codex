@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0005",
-  "state": "review-ready",
+  "state": "completed",
   "risk": "high",
-  "updatedAt": "2026-10-13T10:03:00.375Z",
+  "updatedAt": "2026-10-13T11:10:30.585Z",
   "history": [
     {
       "from": null,
@@ -52,6 +52,13 @@
       "actor": "Cursor",
       "at": "2026-10-13T10:03:00.375Z",
       "note": "All mandatory gates passed"
+    },
+    {
+      "from": "review-ready",
+      "to": "completed",
+      "actor": "xXFengXx",
+      "at": "2026-10-13T11:10:30.585Z",
+      "note": "PR #8 merged"
     }
   ]
 }
