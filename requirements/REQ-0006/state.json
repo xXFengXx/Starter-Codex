@@ -1,8 +1,8 @@
 {
   "requirementId": "REQ-0006",
-  "state": "approved",
+  "state": "implementing",
   "risk": "low",
-  "updatedAt": "2026-10-13T13:01:02.683Z",
+  "updatedAt": "2026-10-16T07:01:21.548Z",
   "history": [
     {
       "from": null,
@@ -45,6 +45,13 @@
       "actor": "xXFengXx",
       "at": "2026-10-13T13:01:02.683Z",
       "note": "/retry"
+    },
+    {
+      "from": "approved",
+      "to": "implementing",
+      "actor": "Codex",
+      "at": "2026-10-16T07:01:21.548Z",
+      "note": "Approved implementation begins"
     }
   ]
 }

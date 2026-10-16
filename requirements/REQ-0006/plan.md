@@ -6,13 +6,13 @@
 
 ## 步骤
 
-- [ ] 对照 `package.json`、`.nvmrc`、`scripts/dev.js` 和 `feature_list.json` 复核项目描述、环境要求、命令及当前限制。
-- [ ] 在仓库根目录新增 `README.md`，说明项目定位、技术栈与当前核心能力（AC-001）。
-- [ ] 写入 Node.js 22、`npm ci` 和 `npm run dev` 的可复制复现步骤，并解释启动命令的可观察行为（AC-002、AC-003）。
-- [ ] 写入 `npm run check`、`npm test`、`npm run build` 三项质量检查命令（AC-004）。
-- [ ] 添加覆盖主要目录的仓库结构导航（AC-005）。
-- [ ] 添加当前限制章节，如实注明导入 UI 和产品自动化测试的基线状态（AC-006）。
-- [ ] 人工逐条检查验收标准，并更新 `traceability.md` 的实现位置与验证结果。
+- [x] 对照 `package.json`、`.nvmrc`、`scripts/dev.js` 和 `feature_list.json` 复核项目描述、环境要求、命令及当前限制。
+- [x] 在仓库根目录新增 `README.md`，说明项目定位、技术栈与当前核心能力（AC-001）。
+- [x] 写入 Node.js 22、`npm ci` 和 `npm run dev` 的可复制复现步骤，并解释启动命令的可观察行为（AC-002、AC-003）。
+- [x] 写入 `npm run check`、`npm test`、`npm run build` 三项质量检查命令（AC-004）。
+- [x] 添加覆盖主要目录的仓库结构导航（AC-005）。
+- [x] 添加当前限制章节，如实注明导入 UI 和产品自动化测试的基线状态（AC-006）。
+- [x] 人工逐条检查验收标准，并更新 `traceability.md` 的实现位置与验证结果。
 - [ ] 经批准进入实施与验证阶段后，运行通用门禁及 `npm run harness:verify -- REQ-0006`；检查依赖审计结果但不静默升级依赖。
 
 ## 验证计划
